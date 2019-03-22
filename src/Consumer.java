@@ -1,7 +1,7 @@
 /**
- * Consumes unloaded cargo ships from the departure zone.
  *
- * @author ngeard@unimelb.edu.au
+ *
+ * @author weizhuoz@student.unimelb.edu.au
  *
  */
 
@@ -9,10 +9,12 @@ public class Consumer extends Thread {
 
     // the wait zone from which cargo ships depart
     private WaitZone departureZone;
+    private Params params;
 
     // creates a new consumer for the given wait zone
-    Consumer(WaitZone newDepartureZone) {
+    Consumer(WaitZone newDepartureZone, Params params) {
         this.departureZone = newDepartureZone;
+        this.params = params;
     }
 
     // repeatedly collect waiting ships from the departure zone
@@ -23,7 +25,7 @@ public class Consumer extends Thread {
                 departureZone.depart();
 
                 // let some time pass before the next departure
-                sleep(Params.departureLapse());
+                sleep(params.departureLapse());
             }
             catch (InterruptedException e) {
                 this.interrupt();

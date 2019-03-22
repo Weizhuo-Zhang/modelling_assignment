@@ -12,3 +12,6 @@
 2. Is there time spent on traveling between arrival and depart wait zone?
 
 3. The times between arrivals should vary?
+
+4. The Params Class is not reasonable, if I want modify some parameters, I
+should re-compile all the source code.

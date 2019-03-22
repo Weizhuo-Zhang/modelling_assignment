@@ -1,0 +1,14 @@
+1.
+    Scenario:
+    All the tugs are occupied by ships that have not commencing dock,
+    there are no enough tugs for undocking ships.
+
+    Result:
+    This will result in deadlock.
+
+    Solutions:
+    Keep 2 tugs available for undocking
+
+2. Is there time spent on traveling between arrival and depart wait zone?
+
+3. The times between arrivals should vary?

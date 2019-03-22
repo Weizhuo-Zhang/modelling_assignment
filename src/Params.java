@@ -1,42 +1,105 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 class Params {
-    static final int NUM_PILOTS = 2;
+    public final int NUM_PILOTS;
 
-    static final int NUM_TUGS = 5;
+    public final int NUM_TUGS;
 
-    static final int DOCKING_TUGS = 3;
+    public final int DOCKING_TUGS;
 
-    static final int UNDOCKING_TUGS = 2;
+    public final int UNDOCKING_TUGS;
 
-    static final int DOCKING_TIME = 800;
+    public final int DOCKING_TIME;
 
-    static final int UNDOCKING_TIME = 400;
+    public final int UNDOCKING_TIME;
 
-    static final int UNLOADING_TIME = 1200;
+    public final int UNLOADING_TIME;
 
-    static final int TRAVEL_TIME = 800;
+    public final int TRAVEL_TIME;
 
-    static final int DEBRIS_TIME = 1800;
+    public final int DEBRIS_TIME;
 
-    private static final int MAX_ARRIVAL_INTERVAL = 400;
+    private final int MAX_ARRIVAL_INTERVAL;
 
-    private static final int MAX_DEPARTURE_INTERVAL = 1000;
+    private final int MAX_DEPARTURE_INTERVAL;
 
-    private static final int MAX_DEBRIS_INTERVAL = 2400;
+    private final int MAX_DEBRIS_INTERVAL;
 
-    static int debrisLapse() {
-        Random rnd = new Random();
-        return rnd.nextInt(MAX_DEBRIS_INTERVAL);
+    public Params(String configFilePath) {
+        ResourceBundle resource = ResourceBundle.getBundle(configFilePath);
+        NUM_PILOTS =
+            Integer.parseInt(resource.getString("NUM_PILOTS"));
+        NUM_TUGS =
+            Integer.parseInt(resource.getString("NUM_TUGS"));
+        DOCKING_TUGS =
+            Integer.parseInt(resource.getString("DOCKING_TUGS"));
+        UNDOCKING_TUGS =
+            Integer.parseInt(resource.getString("UNDOCKING_TUGS"));
+        DOCKING_TIME =
+            Integer.parseInt(resource.getString("DOCKING_TIME"));
+        UNDOCKING_TIME =
+            Integer.parseInt(resource.getString("UNDOCKING_TIME"));
+        UNLOADING_TIME =
+            Integer.parseInt(resource.getString("UNLOADING_TIME"));
+        TRAVEL_TIME =
+            Integer.parseInt(resource.getString("TRAVEL_TIME"));
+        DEBRIS_TIME =
+            Integer.parseInt(resource.getString("DEBRIS_TIME"));
+        MAX_ARRIVAL_INTERVAL =
+            Integer.parseInt(resource.getString("MAX_ARRIVAL_INTERVAL"));
+        MAX_DEPARTURE_INTERVAL =
+            Integer.parseInt(resource.getString("MAX_DEPARTURE_INTERVAL"));
+        MAX_DEBRIS_INTERVAL =
+            Integer.parseInt(resource.getString("MAX_DEBRIS_INTERVAL"));
     }
 
-    static int arrivalLapse() {
+    /**
+     * Read properties file using InputFileStream.
+     */
+    //private void readPropertiesFile(String configFilePath){
+    //    try {
+    //        InputStream inputStream =
+    //                new FileInputStream(new File(configFilePath));
+    //    } catch (FileNotFoundException e) {
+    //        System.err.println("[ERROR]: " + configFilePath + " is not found.");
+    //    }
+    //}
+
+    public int arrivalLapse() {
         Random rnd = new Random();
-        return rnd.nextInt(MAX_ARRIVAL_INTERVAL);
+        return rnd.nextInt(this.MAX_ARRIVAL_INTERVAL);
     }
 
-    static int departureLapse() {
+    public int departureLapse() {
         Random rnd = new Random();
-        return rnd.nextInt(MAX_DEPARTURE_INTERVAL);
+        return rnd.nextInt(this.MAX_DEPARTURE_INTERVAL);
+    }
+
+    public int debrisLapse() {
+        Random rnd = new Random();
+        return rnd.nextInt(this.MAX_DEBRIS_INTERVAL);
+    }
+
+    /**
+     * Test the correctness of reading properties file.
+     */
+    private void testPramsFileReader() {
+        System.out.println("NUM_PILOTS: " + NUM_PILOTS);
+        System.out.println("NUM_TUGS: " + NUM_TUGS);
+        System.out.println("DOCKING_TUGS: " + DOCKING_TUGS);
+        System.out.println("UNDOCKING_TUGS: " + UNDOCKING_TUGS);
+        System.out.println("DOCKING_TIME: " + DOCKING_TIME);
+        System.out.println("UNDOCKING_TIME: " + UNDOCKING_TIME);
+        System.out.println("UNLOADING_TIME: " + UNLOADING_TIME);
+        System.out.println("TRAVEL_TIME: " + TRAVEL_TIME);
+        System.out.println("DEBRIS_TIME: " + DEBRIS_TIME);
+        System.out.println("MAX_ARRIVAL_INTERVAL: " + MAX_ARRIVAL_INTERVAL);
+        System.out.println("MAX_DEPARTURE_INTERVAL: " + MAX_DEPARTURE_INTERVAL);
+        System.out.println("MAX_DEBRIS_INTERVAL: " + MAX_DEBRIS_INTERVAL);
     }
 }
