@@ -65,13 +65,15 @@ public class WaitZone {
 
     }
 
-    public Ship allocateShip() {
+    public Ship allocateShip(String pilotID) {
         Ship ship = null;
         if (this._zoneType.equals(ZoneTypes.ARRIVAL)) {
             try {
                 this._arrivalProductSemaphore.acquire();
                 this._arrivalOperateSemaphore.acquire();
                 ship = this._arrivalShipQueue.poll();
+                System.out.println(
+                        pilotID + " acquires " + ship.toString()+".");
                 this._arrivalOperateSemaphore.release();
                 this._arrivalQueueSemaphore.release();
             } catch (InterruptedException e) { }
@@ -102,12 +104,15 @@ public class WaitZone {
         }
     }
 
-    public void releaseShip(Ship ship) {
+    public void releaseShip(Pilot pilot, Ship ship) {
         if (this._zoneType.equals(ZoneTypes.DEPARTURE)) {
             try {
                 this._departureQueueSemaphore.acquire();
                 this._departureOperateSemaphore.acquire();
                 this._departureShipQueue.offer(ship);
+                System.out.println(
+                        pilot.toString() + " releases " + ship.toString() +".");
+                pilot.releaseTugs(_params.UNDOCKING_TUGS);
                 this._departureOperateSemaphore.release();
                 this._departureProductSemaphore.release();
             } catch (InterruptedException e) { }
