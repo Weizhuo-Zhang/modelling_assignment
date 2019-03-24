@@ -22,15 +22,31 @@ class Params {
 
     public final int TRAVEL_TIME;
 
+    /*
+     * The duration time of shield from activating to deactivating.
+     *
+     * The usage for DEBRIS_TIME:
+     *     shield activates ->
+     *     operator.sleep(DEBRIS_TIME) ->
+     *     shield deactivates.
+     */
     public final int DEBRIS_TIME;
 
     private final int MAX_ARRIVAL_INTERVAL;
 
     private final int MAX_DEPARTURE_INTERVAL;
 
+    /*
+     * The max time between two space debris.
+     *
+     * The usage for MAX_DEBRIS_INTERVAL:
+     *     shield deactivates ->
+     *     operator.sleep(rand(0,MAX_DEBRIS_INTERVAL)) ->
+     *     shield activates
+     */
     private final int MAX_DEBRIS_INTERVAL;
 
-    public Params(String configFilePath) {
+    Params(String configFilePath) {
         ResourceBundle resource = ResourceBundle.getBundle(configFilePath);
         NUM_PILOTS =
             Integer.parseInt(resource.getString("NUM_PILOTS"));

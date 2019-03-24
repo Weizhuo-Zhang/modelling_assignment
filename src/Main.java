@@ -22,24 +22,31 @@ public class Main {
          * parameters for this project.
          */
         Params params = new Params("config");
+        if ((params.DOCKING_TUGS + params.UNDOCKING_TUGS) > params.NUM_TUGS) {
+            System.err.println("The number of tugs should be 5 at least.");
+            return;
+        }
 
         // generate the locations and tugs
-        WaitZone arrivalZone = new WaitZone("arrival");
-        WaitZone departureZone = new WaitZone("departure");
-        Tugs tugs = new Tugs(params.NUM_TUGS);
+        WaitZone arrivalZone =
+                new WaitZone(WaitZone.ZoneTypes.ARRIVAL, params);
+        WaitZone departureZone =
+                new WaitZone(WaitZone.ZoneTypes.DEPARTURE, params);
         Berth berth = new Berth("berth");
+        Tugs tugs = new Tugs(params.NUM_TUGS, params, berth);
 
         // generate the producer, consumer and operator processes
         Producer producer = new Producer(arrivalZone, params);
         Consumer consumer = new Consumer(departureZone, params);
-        Operator operator = new Operator(berth);
+        Operator operator = new Operator(berth, params);
 
         // create an array trains to hold the pilots
         Pilot[] pilot = new Pilot[params.NUM_PILOTS];
 
         // generate and start the individual pilot processes
         for (int i = 0; i < params.NUM_PILOTS; i++) {
-            pilot[i] = new Pilot(i, arrivalZone, departureZone, tugs, berth);
+            pilot[i] = new Pilot(i, arrivalZone, departureZone, tugs,
+                    berth, params);
             pilot[i].start();
         }
 

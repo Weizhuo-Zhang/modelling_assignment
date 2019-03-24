@@ -18,7 +18,7 @@ public class Ship {
     private boolean loaded;
 
     // create a new vessel with a given identifier
-    private Ship(int id) {
+    Ship(int id) {
         this.id = id;
         this.loaded = true;
     }
@@ -28,8 +28,9 @@ public class Ship {
         return new Ship(nextId++);
     }
 
+    @Override
     // produce an identifying string for the cargo ship
     public String toString() {
-        return "ship [" + id + "]";
+        return "ship [" + this.id + "]";
     }
 }

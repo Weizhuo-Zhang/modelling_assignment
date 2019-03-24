@@ -9,9 +9,27 @@
     Solutions:
     Keep 2 tugs available for undocking
 
+    at least 5 tugs is needed
+
 2. Is there time spent on traveling between arrival and depart wait zone?
 
 3. The times between arrivals should vary?
 
 4. The Params Class is not reasonable, if I want modify some parameters, I
 should re-compile all the source code.
+
+5. In Berth,
+    only one thread executing write operation: use volatile.
+    multi thread executing write operation: use synchronized.
+
+6. WaitZone,
+    Use Semaphore to control the mutual exclusion in different write methods
+    which are trying to modify the same variable.
+
+    The num of ship in arrival wait zone should be less than the num of pilots.
+
+    Use the enum to define the type of waitzone is not that easy to make mistake
+    than using String. And it is more easy to debug.
+
+7. wait() and notifyAll()
+    use three semaphore que, operation, full

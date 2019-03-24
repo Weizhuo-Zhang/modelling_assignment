@@ -8,13 +8,13 @@
 public class Consumer extends Thread {
 
     // the wait zone from which cargo ships depart
-    private WaitZone departureZone;
-    private Params params;
+    private WaitZone _departureZone;
+    private Params _params;
 
     // creates a new consumer for the given wait zone
     Consumer(WaitZone newDepartureZone, Params params) {
-        this.departureZone = newDepartureZone;
-        this.params = params;
+        this._departureZone = newDepartureZone;
+        this._params = params;
     }
 
     // repeatedly collect waiting ships from the departure zone
@@ -22,10 +22,10 @@ public class Consumer extends Thread {
         while (!isInterrupted()) {
             try {
                 // remove a vessel that is in the departure wait zone
-                departureZone.depart();
+                _departureZone.depart();
 
                 // let some time pass before the next departure
-                sleep(params.departureLapse());
+                sleep(_params.departureLapse());
             }
             catch (InterruptedException e) {
                 this.interrupt();
