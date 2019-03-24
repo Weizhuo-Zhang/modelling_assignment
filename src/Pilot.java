@@ -23,11 +23,8 @@ public class Pilot extends Thread{
     }
 
     private void acquireShip() {
-        this._ship = this._arrivalZone.allocateShip();
-        if (null != this._ship) {
-            System.out.println(
-                    this.toString() + " acquires " + this._ship.toString()+".");
-        } else {
+        this._ship = this._arrivalZone.allocateShip(this.toString());
+        if (null == this._ship) {
             System.err.println("[ERROR]" + this.toString() + " acquires ship" +
                     " failed.");
             this.interrupt();
@@ -38,7 +35,7 @@ public class Pilot extends Thread{
         this._tugs.allocateTugs(this.toString(), numOfAcquiring);
     }
 
-    private void releaseTugs(int numOfReleasing) {
+    public void releaseTugs(int numOfReleasing) {
         this._tugs.releaseTugs(this.toString(), numOfReleasing);
     }
 
@@ -47,7 +44,7 @@ public class Pilot extends Thread{
             this._berth.waitForBeris();
             this._berth.allocateBerth();
             sleep(_params.DOCKING_TIME);
-            System.out.println(this._ship.toString() + "docks at berth.");
+            System.out.println(this._ship.toString() + " docks at berth.");
         } catch (InterruptedException e) { }
     }
 
@@ -68,9 +65,7 @@ public class Pilot extends Thread{
     }
 
     private void waitForDepart() {
-        this._departureZone.releaseShip(this._ship);
-        System.out.println(
-                this.toString() + " releases " + this._ship.toString() + ".");
+        this._departureZone.releaseShip(this, this._ship);
         this._ship = null;
     }
 
@@ -97,7 +92,6 @@ public class Pilot extends Thread{
                 // Leaving berth and approaching departure wait zone.
                 sleep(_params.TRAVEL_TIME);
                 this.waitForDepart();
-                this.releaseTugs(_params.UNDOCKING_TUGS);
             } catch (InterruptedException e) {
                 this.interrupt();
             }
