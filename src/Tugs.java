@@ -43,6 +43,8 @@ public class Tugs {
      *      The name of the pilot
      * @param numOfAcquiring
      *      The number of required tugs
+     * @param dockingType
+     *      The type of this operation such as DOCKING or UNDOCKING.
      */
     public synchronized void allocateTugs(String pilotName,
                                           int numOfAcquiring,

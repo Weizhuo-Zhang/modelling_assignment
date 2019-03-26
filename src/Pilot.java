@@ -67,7 +67,10 @@ public class Pilot extends Thread{
     /**
      * @description
      *      The pilot acquire tugs for the next step.
-     * @param  Null
+     * @param numOfAcquiring
+     *      The number of required tugs
+     * @param dockingType
+     *      The type of this operation such as DOCKING or UNDOCKING.
      * @return NUll
      */
     private void acquireTugs (int numOfAcquiring,
@@ -78,7 +81,8 @@ public class Pilot extends Thread{
     /**
      * @description
      *      The pilot release tugs and complete current task.
-     * @param  Null
+     * @param numOfReleasing
+     *      The number of tugs that about to be released.
      * @return NUll
      */
     public void releaseTugs(int numOfReleasing) {
