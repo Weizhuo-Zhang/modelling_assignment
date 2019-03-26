@@ -1,7 +1,9 @@
 /**
+ * Consumes unloaded cargo ships from the departure zone.
  *
- *
- * @author weizhuoz@student.unimelb.edu.au
+ * @author ngeard@unimelb.edu.au
+ *         weizhuoz@student.unimelb.edu.au
+ *         Weizhuo Zhang (1018329)
  *
  */
 

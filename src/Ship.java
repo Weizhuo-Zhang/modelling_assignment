@@ -4,6 +4,7 @@
  *
  * @author ngeard@unimelb.edu.au
  *         weizhuoz@student.unimelb.edu.au
+ *         Weizhuo Zhang (1018329)
  */
 
 public class Ship {
@@ -14,13 +15,9 @@ public class Ship {
     // the next ID to be allocated
     private static int nextId = 1;
 
-    // a flag indicating whether the ship is currently loaded
-    private boolean loaded;
-
     // create a new vessel with a given identifier
     Ship(int id) {
         this.id = id;
-        this.loaded = true;
     }
 
     // get a new Ship instance with a unique identifier

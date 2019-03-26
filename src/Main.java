@@ -7,6 +7,7 @@
  *
  * @author ngeard@unimelb.edu.au
  *         weizhuoz@student.unimelb.edu.au
+ *         Weizhuo Zhang (1018329)
  */
 
 public class Main {
@@ -22,8 +23,14 @@ public class Main {
          * parameters for this project.
          */
         Params params = new Params("config");
-        if ((params.DOCKING_TUGS + params.UNDOCKING_TUGS) > params.NUM_TUGS) {
-            System.err.println("The number of tugs should be 5 at least.");
+
+        // The minimum number of tugs should the sum of DOCKING_TUGS and
+        // UNDOCKING_TUGS. As the tugs should ensure are sufficient for one
+        // ship docking and undocking.
+        int minTugs = params.DOCKING_TUGS + params.UNDOCKING_TUGS;
+        if (minTugs> params.NUM_TUGS) {
+            System.err.println("The number of tugs should be " + minTugs +
+                    " at least.");
             return;
         }
 

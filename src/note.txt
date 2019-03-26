@@ -33,3 +33,5 @@ should re-compile all the source code.
 
 7. wait() and notifyAll()
     use three semaphore que, operation, full
+
+8. If the undocking num is more than docking num of tugs

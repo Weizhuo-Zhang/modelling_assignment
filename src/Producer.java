@@ -2,6 +2,8 @@
  * Produces new cargo ships wanting to unload cargo at the space station.
  *
  * @author ngeard@unimelb.edu.au
+ *         weizhuoz@student.unimelb.edu.au
+ *         Weizhuo Zhang (1018329)
  *
  */
 
