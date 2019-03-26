@@ -1,0 +1,71 @@
+1. No enough tugs for undocking results in deadlock
+    Scenario:
+        When there is one ship at berth and ready for undocking, if there is no
+        enough tugs available for undocking, the ship cannot undock and other
+        ship cannot dock.
+    Problem:
+        This can result in deadlock.
+    Solution:
+        Before this issue happens, we can preserve enough tugs that meets the
+        requirement of undocking process.
+        Divided into two situations:
+        a. DOCKING_TUGS >= UNDOCKING_TUGS
+            In this situation, if there is no ships at berth, we don't need to
+            worry about the available tugs. As when a ship docks, it will
+            release DOCKING_TUGS and the number of undocking is less than this
+            number. When there is a ship at berth currently, we need to preserve
+             at least UNDOCKING_TUGS for undocking of this ship. At most, we
+            need to preserve (DOCKING_TUGS + UNDOCKING_TUGS - 1) as tugs are
+            also needed by other ships.
+        b. DOCKING_TUGS <  UNDOCKING_TUGS
+            In this situation, if there is no ships at berth, we need to care
+            about the number of available tugs. As when a ship docks and no
+            available tugs, the number of tugs it released is not enough for its
+             undocking. We need to preserve enough tugs for undocking process
+             before the ship undocking. After docking, we also need to preserve
+             tugs from UNDOCKING_TUGS to (DOCKING_TUGS + UNDOCKING_TUGS - 1).
+
+2. Use two semaphores to control the wait zone finite list simulating the
+producer and consumer.
+    Scenario:
+        I use a queue to store all the ships and available space at the wait
+        zone and want to set a bound for this wait zone.
+    Problem:
+        It is hard to control the upper bound of this queue or this semaphore,
+        when there are only one producer and multiple consumers. If there is
+        only one semaphore, the consumer might release overhead and might cause
+        starvation.
+    Solution:
+        I use two semaphore to simulate producer and consumers. Producer only
+        acquires producer_semaphore and release consumer_semaphore. Consumers
+        acquire consumer_semaphore and producer_semaphore.
+
+
+3. Use a properties file as a configuration file.
+    Scenario:
+        The previous Params class initialized all the parameters in this class
+        as a final constant variable.
+    Problem:
+        If I want to change parameters to observe the new simulating process, I
+        need to recompile the whole project which does not make sense.
+    Solution:
+        I use a properties file as a configuration file which stores all the
+        parameters and its value. Params class reads a properties file when
+        a new instance is constructed. We do not need to recompile the program
+        if we only modify the parameters in that properties file. We only need
+        to recompile the program when the source code is modified.
+
+4. When the total number of tugs is not enough for docking or undocking.
+    Scenario:
+        The total number of tugs is less than the number of tugs required by
+        docking or undocking.
+    Problem:
+        It will cause deadlock either a ship has docked but the total number of
+        tugs is less than that required by undocking, or a ship can not even
+        dock without enough tugs when the total number of tugs is less than that
+         required by docking.
+    Solution:
+        In this situation, program in main method reads all the parameters and
+        can recognize this situation before any threads starting. The total
+        number of tugs should be max(DOCKING_TUGS, UNDOCKING_TUGS), otherwise
+        the program will exit and print the error message.

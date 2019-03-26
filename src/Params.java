@@ -15,6 +15,10 @@ import java.util.ResourceBundle;
  */
 
 class Params {
+    /* The type of docking */
+    public static enum DockingType {
+        DOCKING, UNDOCKING;
+    }
     /* The number of pilots */
     public final int NUM_PILOTS;
 

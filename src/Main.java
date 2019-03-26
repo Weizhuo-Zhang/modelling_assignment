@@ -24,11 +24,13 @@ public class Main {
          */
         Params params = new Params("config");
 
-        // The minimum number of tugs should the sum of DOCKING_TUGS and
-        // UNDOCKING_TUGS. As the tugs should ensure are sufficient for one
-        // ship docking and undocking.
-        int minTugs = params.DOCKING_TUGS + params.UNDOCKING_TUGS;
-        if (minTugs> params.NUM_TUGS) {
+        int minTugs = 0;
+        if (params.DOCKING_TUGS > params.UNDOCKING_TUGS) {
+            minTugs = params.DOCKING_TUGS;
+        } else {
+            minTugs = params.UNDOCKING_TUGS;
+        }
+        if (minTugs > params.NUM_TUGS) {
             System.err.println("The number of tugs should be " + minTugs +
                     " at least.");
             return;

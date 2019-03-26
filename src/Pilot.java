@@ -70,8 +70,9 @@ public class Pilot extends Thread{
      * @param  Null
      * @return NUll
      */
-    private void acquireTugs(int numOfAcquiring) {
-        this._tugs.allocateTugs(this.toString(), numOfAcquiring);
+    private void acquireTugs (int numOfAcquiring,
+                              Params.DockingType dockingType) {
+        this._tugs.allocateTugs(this.toString(), numOfAcquiring, dockingType);
     }
 
     /**
@@ -156,7 +157,9 @@ public class Pilot extends Thread{
                 // a ship
                 this.acquireShip();
                 // Approaching: travel from arrival wait zone to berth
-                this.acquireTugs(_params.DOCKING_TUGS);
+                this.acquireTugs(
+                        _params.DOCKING_TUGS,
+                        Params.DockingType.DOCKING);
                 sleep(_params.TRAVEL_TIME);
 
                 // Docking
@@ -167,7 +170,9 @@ public class Pilot extends Thread{
                 this.unload();
 
                 // Undocking
-                this.acquireTugs(_params.UNDOCKING_TUGS);
+                this.acquireTugs(
+                        _params.UNDOCKING_TUGS,
+                        Params.DockingType.UNDOCKING);
                 this.undockFromBerth();
 
                 // Leaving berth and approaching departure wait zone.

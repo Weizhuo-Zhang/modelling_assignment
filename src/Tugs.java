@@ -44,7 +44,9 @@ public class Tugs {
      * @param numOfAcquiring
      *      The number of required tugs
      */
-    public synchronized void allocateTugs(String pilotName, int numOfAcquiring){
+    public synchronized void allocateTugs(String pilotName,
+                                          int numOfAcquiring,
+                                          Params.DockingType dockingType){
         try {
             /**
              * The thread will wait when
@@ -66,13 +68,13 @@ public class Tugs {
              *      to reserve enough number of tugs for undocking.
              */
             while ((this._berth.hasShip() &&
-                this._params.DOCKING_TUGS == numOfAcquiring &&
+                Params.DockingType.DOCKING == dockingType &&
                 (this._params.DOCKING_TUGS + this._params.UNDOCKING_TUGS) >
                     _numOfTugs) ||
                 (_numOfTugs < numOfAcquiring) ||
                 (false == this._berth.hasShip() &&
                     (this._params.DOCKING_TUGS < this._params.UNDOCKING_TUGS) &&
-                    (_numOfTugs <= this._params.UNDOCKING_TUGS))){
+                    (_numOfTugs < this._params.UNDOCKING_TUGS))){
                 wait();
             }
             _operationSemaphore.acquire();
