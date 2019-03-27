@@ -1,3 +1,5 @@
+Name:        Weizhuo Zhang
+Student ID:  1018329
 1. No enough tugs for undocking results in the deadlock.
     Scenario:
         When there is one ship at berth and ready for undocking, if there is no
