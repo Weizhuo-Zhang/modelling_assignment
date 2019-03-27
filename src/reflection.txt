@@ -29,7 +29,8 @@
 producer and consumer.
     Scenario:
         I use a queue to store all the ships and available space at the wait
-        zone and want to set a bound for this wait zone.
+        zone and want to set a bound for this wait zone. The size of the queue
+        equals to the number of pilots.
     Problem:
         It is hard to control the upper bound of this queue or this semaphore,
         when there are only one producer and multiple consumers. If there is

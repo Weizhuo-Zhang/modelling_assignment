@@ -25,4 +25,5 @@ hs_err_pid*
 # ignore the IntelliJ idea files
 .idea/
 *.iml
+.DS_Store
 out/
