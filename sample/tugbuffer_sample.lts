@@ -1,0 +1,15 @@
+const TUG_COUNT = 8
+
+//TUGS (N = TUG_COUNT) = TUGS_BUFF[0],
+//TUGS_BUFF[i:0..N] =
+//    ( when (i < N) releaseDockingTugs   -> TUGS_BUFF[i+1]
+//    | when (i < N) releaseUndockingTugs -> TUGS_BUFF[i+1]
+//    | when (i > 0) acquireUndockingTugs -> TUGS_BUFF[i-1] 
+//    | when (i > 0) acquireDockingTugs   -> TUGS_BUFF[i-1]
+//    ).
+
+TUGS (N = TUG_COUNT) = TUGS_BUFF[TUG_COUNT],
+TUGS_BUFF[i:0..N]
+  = ( when (i < N) put -> TUGS_BUFF[i+1]
+	| when (i > 0) get -> TUGS_BUFF[i-1]
+	).

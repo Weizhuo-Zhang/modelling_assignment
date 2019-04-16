@@ -1,0 +1,68 @@
+//
+// Name:       Weizhuo ZHANG
+// Student ID: 1018329
+// Login:      weizhuoz
+// Email:      weizhuoz@student.unimelb.student.edu.au
+//
+
+const TUG_COUNT   = 6
+const PILOT_COUNT = 3
+const DOCKING_TUGS = 3
+const UNDOCKING_TUGS = 2
+const ARRIVAL_ZONE_SIZE = 1
+const DEPARTURE_ZONE_SIZE = 1
+
+const False = 0
+const True = 1
+range Bool = False..True
+
+ARRIVAL_ZONE (N = ARRIVAL_ZONE_SIZE) = ARRIVAL_BUFF[0],
+ARRIVAL_BUFF [i:0..N] =
+    ( when (i < N) shipArriveArrival -> ARRIVAL_BUFF[i+1]
+    | when (i > 0) shipDepartArrival -> ARRIVAL_BUFF[i-1]
+	).
+
+PRODUCER = ( createNewShip -> PRODUCER)
+           /{createNewShip/shipArriveArrival}.
+
+DEPARTURE_ZONE (N = DEPARTURE_ZONE_SIZE) = DEPARTURE_BUFF[0],
+DEPARTURE_BUFF [i:0..N] =
+    ( when (i < N) shipArriveDeparture -> DEPARTURE_BUFF[i+1]
+    | when (i > 0) shipDepartDeparture -> DEPARTURE_BUFF[i-1]
+    ),
+
+CONSUMER = ( departShip -> CONSUMER)
+           /{departShip/shipDepartDeparture}.
+
+BERTH (N = 1) = BERTH_BUFF[0][False],
+BERTH_BUFF[i:0..N][shield:Bool] =
+    ( when (i < N && False == shield) dock   -> BERTH_BUFF[i+1][shield]
+    | when (i > 0 && False == shield) undock -> BERTH_BUFF[i-1][shield]
+	| when (False == shield) activateShield -> BERTH_BUFF[i][True]
+	| when (True == shield) deactivateShield -> BERTH_BUFF[i][False]
+	).
+
+TUGS (N = TUG_COUNT) = TUGS_BUFF[TUG_COUNT],
+TUGS_BUFF[i:0..N] =
+    ( when (i <= (N - DOCKING_TUGS)) releaseDockingTugs   -> TUGS_BUFF[i+DOCKING_TUGS]
+    | when (i <= (N - UNDOCKING_TUGS)) releaseUndockingTugs -> TUGS_BUFF[i+UNDOCKING_TUGS]
+    | when (i >= UNDOCKING_TUGS) acquireUndockingTugs -> TUGS_BUFF[i-UNDOCKING_TUGS] 
+    | when (i >= DOCKING_TUGS) acquireDockingTugs   -> TUGS_BUFF[i-DOCKING_TUGS]
+    ).
+
+PILOT = 
+	(  acquireShip -> acquireDockingTugs   -> dock   -> releaseDockingTugs
+    -> unload      -> acquireUndockingTugs -> undock -> releaseShip
+    -> releaseUndockingTugs -> PILOT
+	).
+
+||MAIN =
+	(  ARRIVAL_ZONE
+	|| DEPARTURE_ZONE
+	|| BERTH
+	|| {p[i:1..PILOT_COUNT]}::TUGS(TUG_COUNT)
+	|| p[i:1..PILOT_COUNT]:PILOT
+    )/{ p[i:1..PILOT_COUNT].acquireShip/shipDepartArrival,
+		p[i:1..PILOT_COUNT].dock/dock,
+		p[i:1..PILOT_COUNT].undock/undock,
+		p[i:1..PILOT_COUNT].releaseShip/shipArriveDeparture}.

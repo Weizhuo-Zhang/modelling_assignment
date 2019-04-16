@@ -1,0 +1,30 @@
+const PILOT_COUNT = 3
+
+ARRIVAL_ZONE (N = 1) = ARRIVAL_BUFF[0],
+ARRIVAL_BUFF [i:0..N] =
+    ( when (i < N) shipArriveArrival -> ARRIVAL_BUFF[i+1]
+    | when (i > 0) shipDepartArrival -> ARRIVAL_BUFF[i-1]
+    ),
+
+PRODUCER = ( createNewShip -> PRODUCER)
+           /{createNewShip/shipArriveArrival}.
+
+
+PILOT = (  acquireShip -> acquireDockingTugs   -> dock   -> releaseDockingTugs
+        -> unload      -> acquireUndockingTugs -> undock -> releaseShip
+        -> releaseUndockingTugs -> PILOT).
+//        /{ acquireShip/shipDepartArrival, releaseShip/shipArriveDeparture}.
+		
+
+
+//property PILOT_ACQUIRESHIP
+//	= (p[i:1..PILOT_COUNT].shipArriveArrival -> p[i:1..PILOT_COUNT].acquireShip -> PILOT_ACQUIRESHIP).
+
+||MAIN =
+	( ARRIVAL_ZONE
+//	(  ARRIVAL_ZONE
+//  || {producer}::ARRIVAL_ZONE
+//	|| producer:PRODUCER
+	|| p[i:1..PILOT_COUNT]:PILOT
+//	).
+    )/{p[i:1..PILOT_COUNT].acquireShip/shipDepartArrival}.
