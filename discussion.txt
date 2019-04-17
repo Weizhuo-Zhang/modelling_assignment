@@ -5,13 +5,50 @@
 // Email:      weizhuoz@student.unimelb.student.edu.au
 //
 
+1.  Scenario:
+    When the number of tugs is 6 and docking needs 3 tugs per ship, if there is
+    one ship docked at berth currently and those 6 tugs are allocated to ships
+    that are ready for docking.
 
-Tugs = 6
-dock = 3
-undock = 2
-1. No enough tugs for undocking.
+    Result:
+    Under this circumstance, the process violation occurs in this system. No
+    ship can move onto the next step. The docking ship needs tugs for undocking
+    but there are no enough tugs for undocking. The ships ready for docking is
+    waiting for the ship that docks at berth currently to undock. This cause a
+    deadlock circle. And this system is cycling in terminal states
+    {activeShield, deactiveShield} and cause process violation.
 
+    Suggestion:
+    We should preserve enough tugs for docked ships to finish its undocking
+    process. If there is a ship docking at berth and not ready for acquiring
+    undocking tugs, we do not permit tugs taking by other ships when the number
+    of tugs is less than (DOCKING_TUGS + UNDOCKING_TUGS). Otherwise, there are
+    no enough tugs for undocking after one ship takes tugs for docking.
 
-tugs = 4
-dock = 3
-undock = 2
+    Reflection:
+    I only noticed this issue that could cause process violation but have not
+    come up solutions for this issue when I submitted assignment 1a. This issue
+    is fixed after a building modified FSP model which detects this process
+    violation and gives certain sequential states that reproduce this issue.
+
+2.  Scenario:
+    The releasing tugs are after consumer departing ships in the original model.
+    I add a property indicating that the releasing tugs must happen before
+    departing ships.
+
+    Result:
+    It causes property violation in departing ship of consumer process. Consumer
+    might departs ship before releasing tugs in that ship as the consumer is a
+    independent process and might executing instruction of departing ship before
+    the pilot process executing the instruction of releasing tugs.
+
+    Suggestion:
+    In the wait zone process, one action releasing tugs is added strictly
+    followed by the action releasing ship. And the pilot of releasing ship and
+    tugs should be the same pilot.
+
+    Reflection:
+    FSP is not similar to the programming language. We can write instructions
+    one by one in the programming language, but reflecting those codes to FSP
+    where every class is regarded as a process does not work as expected.
+
