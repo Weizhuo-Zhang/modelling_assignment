@@ -4,3 +4,14 @@
 // Login:      weizhuoz
 // Email:      weizhuoz@student.unimelb.student.edu.au
 //
+
+
+Tugs = 6
+dock = 3
+undock = 2
+1. No enough tugs for undocking.
+
+
+tugs = 4
+dock = 3
+undock = 2
