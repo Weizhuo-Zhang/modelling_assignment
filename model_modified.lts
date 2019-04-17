@@ -89,15 +89,6 @@ PILOT =
     -> releaseUndockingTugs -> PILOT
     ).
 
-// When a pilot acquire tugs for docking or undocking, it should release those
-// tugs after finishing its docking or undocking.
-//property RELEASE_TUGS =
-//    ( p[i:1..PILOT_COUNT].acquireDockingTugs   -> p[i].releaseDockingTugs
-//        -> RELEASE_TUGS
-//    | p[i:1..PILOT_COUNT].acquireUndockingTugs -> p[i].releaseUndockingTugs
-//        -> RELEASE_TUGS
-//    ).
-
 // Ship can departs from departure zone after that pilot release this ship and
 // release its tugs.
 property RELEASE_SHIP =
@@ -112,7 +103,6 @@ property RELEASE_SHIP =
     || berth:BERTH
     || TUGS(TUG_COUNT)
     || p[i:1..PILOT_COUNT]:PILOT
-//    || RELEASE_TUGS
     || RELEASE_SHIP
     )/{ p[i:1..PILOT_COUNT].acquireShip/shipDepartArrival,
         p[i:1..PILOT_COUNT].dock/berth.dock,
