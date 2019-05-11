@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Position {
     private int coordinateX;
@@ -49,7 +50,34 @@ public class Position {
     }
 
     public Position move(Person person) {
+        ArrayList<Position> availableNeighborhood = new ArrayList<Position>();
+        for (Position neighbor : neighborhood) {
+            if (!neighbor.isOccupied()) {
+                availableNeighborhood.add(neighbor);
+            }
+        }
 
+        if (0 == availableNeighborhood.size()) {
+            return null;
+        } else {
+            occupied = null;
+            Random random = new Random();
+            int maxIndex = neighborhood.size();
+            int randomIndex = random.nextInt(maxIndex);
+            return availableNeighborhood.get(randomIndex);
+        }
+    }
+
+    public void occupy(Person person) {
+        occupied = person;
+    }
+
+    public boolean isOccupied(){
+        if (null == occupied) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private float computeDistance(int x1, int y1, int x2, int y2) {

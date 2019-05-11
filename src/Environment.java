@@ -1,3 +1,5 @@
+import javafx.geometry.Pos;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -39,13 +41,25 @@ public class Environment {
         return mapHeight;
     }
 
-    public Position acquireAvailablePosition() {
+    public Position acquireAvailablePosition(Person person) {
         Random random = new Random();
         int maxIndex = availablePosition.size();
         int randomIndex = random.nextInt(maxIndex);
         Position position = availablePosition.get(randomIndex);
+        position.occupy(person);
         availablePosition.remove(randomIndex);
         return position;
+    }
+
+    public Position acquireMoving(Person person, Position position) {
+        Position newPosition = position.move(person);
+        if (null == newPosition) {
+            return position;
+        } else {
+            availablePosition.add(position);
+            newPosition.occupy(person);
+            return newPosition;
+        }
     }
 
     public Position getPosition(int coordinateX, int coordinateY) {
