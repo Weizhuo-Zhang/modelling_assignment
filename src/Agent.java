@@ -12,8 +12,8 @@ public class Agent extends Person{
     private boolean active;
     private int jailTerm;
 
-    public Agent(Position position, int maxJailTerm) throws Exception{
-        super(position, maxJailTerm);
+    public Agent(Environment environment) throws Exception{
+        super(environment);
         Random random = new Random();
         riskAversion = random.nextDouble();
         perceivedHardship = random.nextDouble();
@@ -21,40 +21,49 @@ public class Agent extends Person{
         jailTerm = 0;
     }
 
-    public double getRiskAversion() {
-        return riskAversion;
-    }
-
-    public double getPerceivedHardship() {
-        return perceivedHardship;
-    }
-
-    // TODO: release Position
-    // TODO: governmentLegitimacy how to use
-    public void beArrested(int jailTerm) {
-        this.active = false;
-        this.jailTerm = jailTerm;
-    }
-
     public boolean isActive() {
         return active;
-    }
-
-    public void decreaseJailTerm() {
-        if (jailTerm > 0) {
-            jailTerm--;
-        }
     }
 
     public int getJailTerm() {
         return jailTerm;
     }
 
-    public void action() {
-        double netRisk = getArrestedProbability() * riskAversion;
-        if ((perceivedHardship - netRisk) > THRESHOLD) {
-            active = true;
+    public void action() throws Exception {
+        if (jailTerm > 0) {
+            // If this agent is in jail
+            decreaseJailTerm();
+        } else if (null == getPosition()){
+            // If this agent just leave the jail
+            this.setPosition(
+                    getPersonEnvironment().acquireAvailablePosition(this));
+        } else {
+            // Agent is not in jail
+            double netRisk = getArrestedProbability() * riskAversion;
+            if ((getGrievance() - netRisk) > THRESHOLD) {
+                active = true;
+            } else {
+                active = false;
+            }
+
+            // If movement switch is true, the agent can move to another
+            // position
+            if (this.getPersonEnvironment().isMovement()) {
+                move();
+            }
         }
+    }
+
+    public void beArrested(int jailTerm) throws Exception {
+        this.active = false;
+        this.jailTerm = jailTerm;
+        this.getPersonEnvironment().releasePosition(this);
+    }
+
+    private double getGrievance() {
+        double antiGovernment =
+                1.0 - getPersonEnvironment().getGovernmentLegitimacy();
+        return (perceivedHardship * antiGovernment);
     }
 
     private double getArrestedProbability() {
@@ -75,5 +84,14 @@ public class Agent extends Person{
         double estimatedArrestedProbability =
                 1 - Math.exp((-1) * K * (double)(copCount / agentCount));
         return estimatedArrestedProbability;
+    }
+
+    private void decreaseJailTerm() throws Exception {
+        if (jailTerm > 0) {
+            jailTerm--;
+        } else {
+            throw new Exception("Invalid decrease jailTerm! JailTerm is less " +
+                    "than or equals 0.");
+        }
     }
 }

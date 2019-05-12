@@ -14,6 +14,9 @@ public class Environment {
     private float vision;
     private static int mapWidth;
     private static int mapHeight;
+    private static float governmentLegitimacy;
+    private static int maxJailTerm;
+    private static boolean movementSwitch;
     // The grid map of this environment
     private static Position[][] environmentMap;
     // The available position of the environment
@@ -22,10 +25,19 @@ public class Environment {
     // Use singleton pattern to ensure there is only one Environment instance
     private static Environment environment;
 
-    private Environment(float vision, int mapWidth, int mapHeight) {
+    private Environment(
+            float vision,
+            int mapWidth,
+            int mapHeight,
+            int maxJailTerm,
+            float governmentLegitimacy,
+            boolean movementSwitch) {
         this.vision = vision;
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
+        this.maxJailTerm = maxJailTerm;
+        this.governmentLegitimacy = governmentLegitimacy;
+        this.movementSwitch = movementSwitch;
         // Size of environmentMap is (height * width)
         // Length of rows == mapHeight
         // length of cols == mapWidth
@@ -36,9 +48,20 @@ public class Environment {
 
     // Getter method of this singleton class
     public static Environment getEnvironment(
-            float vision, int mapWidth, int mapHeight) {
+            float vision,
+            int mapWidth,
+            int mapHeight,
+            int maxJailTerm,
+            float governmentLegitimacy,
+            boolean movementSwitch) {
         if (null == environment) {
-            environment = new Environment(vision, mapWidth, mapHeight);
+            environment = new Environment(
+                    vision,
+                    mapWidth,
+                    mapHeight,
+                    maxJailTerm,
+                    governmentLegitimacy,
+                    movementSwitch);
             initPositionNeighborhood(environment);
             return environment;
         } else {
@@ -58,15 +81,32 @@ public class Environment {
         return mapHeight;
     }
 
+    public static int getMaxJailTerm() {
+        return maxJailTerm;
+    }
+
+    public static float getGovernmentLegitimacy() {
+        return governmentLegitimacy;
+    }
+
+    public static boolean isMovement() {
+        return movementSwitch;
+    }
+
+    public Position getPosition(int x, int y) {
+        return environmentMap[y][x];
+    }
+
     // Acquire available position in this map randomly
-    public Position acquireAvailablePosition() throws Exception {
-        Random random = new Random();
+    public Position acquireAvailablePosition(Person person) throws Exception {
         int maxIndex = availablePosition.size();
         // If there is no any position available, this function will throws a
         // Exception
         if (0 != maxIndex) {
+            Random random = new Random();
             int randomIndex = random.nextInt(maxIndex);
             Position position = availablePosition.get(randomIndex);
+            position.occupy(person);
             availablePosition.remove(randomIndex);
             return position;
         } else {
@@ -74,24 +114,26 @@ public class Environment {
         }
     }
 
-    // TODO: Remove Person dependency from this Environment class
     // Acquire moving to a new position within vision
-    public Position acquireMoving(
-            Person person, Position position) throws Exception{
-        Position newPosition = position.move(person);
+    public Position acquireMoving(Person person) throws Exception{
+        Position newPosition = person.getPosition().move(person);
         // If there is no any new position to move, the person will stay
         // the same position.
         if (null == newPosition) {
-            return position;
+            return person.getPosition();
         } else {
-            availablePosition.add(position);
+            availablePosition.add(person.getPosition());
+            availablePosition.remove(newPosition);
             newPosition.occupy(person);
             return newPosition;
         }
     }
 
-    public Position getPosition(int x, int y) {
-        return environmentMap[y][x];
+    public void releasePosition(Person person) throws Exception {
+        Position position = person.getPosition();
+        availablePosition.add(position);
+        position.occupy(null);
+        person.setPosition(null);
     }
 
     // Init the environment map

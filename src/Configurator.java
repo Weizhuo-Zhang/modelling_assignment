@@ -89,6 +89,10 @@ public class Configurator {
         return movementSwitch;
     }
 
+    public int getIterationTimes() {
+        return iterationTimes;
+    }
+
     // Check the range of the parameters
     private void checkParameters() throws Exception {
         checkDensity();

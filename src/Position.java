@@ -79,7 +79,7 @@ public class Position {
             if (person.equals(this.occupied)) {
                 occupied = null;
                 Random random = new Random();
-                int maxIndex = neighborhood.size();
+                int maxIndex = availableNeighborhood.size();
                 int randomIndex = random.nextInt(maxIndex);
                 return availableNeighborhood.get(randomIndex);
             } else {
@@ -102,7 +102,10 @@ public class Position {
 
     // Indicate person to occupy this position
     public void occupy(Person person) throws Exception{
-        if (!isOccupied()) {
+        if (null == person) {
+            occupied = null;
+            return;
+        } else if (!isOccupied()) {
             occupied = person;
         } else {
             throw new Exception("Invalid occupy! This position is already " +

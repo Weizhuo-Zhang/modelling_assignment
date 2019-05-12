@@ -1,26 +1,27 @@
 public abstract class Person {
     private Position position;
-    private final int maxJailTerm;
+    private Environment environment;
 
-    public Person(Position position, int maxJailTerm) throws Exception {
-        //position = environment.acquireAvailablePosition(this);
-        this.position = position;
-        this.maxJailTerm = maxJailTerm;
-        this.position.occupy(this);
+    public Person(Environment environment) throws Exception {
+        this.environment = environment;
+        this.position = environment.acquireAvailablePosition(this);
     }
 
     public Position getPosition() {
         return position;
     }
 
-    public int getMaxJailTerm() {
-        return maxJailTerm;
-    }
-
-    public void move(Position position) {
-        //position = environment.acquireMoving(this, position);
+    public void setPosition(Position position) {
         this.position = position;
     }
 
-    abstract public void action();
+    public Environment getPersonEnvironment() {
+        return environment;
+    }
+
+    public void move() throws Exception {
+        position = environment.acquireMoving(this);
+    }
+
+    abstract public void action() throws Exception;
 }

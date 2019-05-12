@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Cop extends Person{
-    public Cop(Position position, int maxJailTerm) throws Exception{
-        super(position, maxJailTerm);
+    public Cop(Environment environment) throws Exception{
+        super(environment);
     }
 
-    public void action() {
+    public void action() throws Exception {
         ArrayList<Position> occupiedNeighbor =
                 this.getPosition().getOccupiedNeighborhood();
         ArrayList<Agent> arrestList = new ArrayList<>();
@@ -26,13 +26,10 @@ public class Cop extends Person{
             int maxIndex = arrestList.size();
             int randomIndex = random.nextInt(maxIndex);
             Agent arrestAgent = arrestList.get(randomIndex);
-            int jailTerm = random.nextInt(getMaxJailTerm() + 1);
+            int jailTerm = random.nextInt(
+                    getPersonEnvironment().getMaxJailTerm() + 1);
             arrestAgent.beArrested(jailTerm);
-            //return arrestAgent;
-            return;
-        } else {
-            //return null;
-            return;
         }
+        move();
     }
 }
