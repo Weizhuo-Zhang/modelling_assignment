@@ -67,10 +67,30 @@ class Main{
                     new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss");
             String date = df.format(new Date());
             File csvOut = new File("out_" + date + ".csv");
-            BufferedWriter bw = new BufferedWriter(new FileWriter(csvOut, false));
+            BufferedWriter bw = new BufferedWriter(
+                    new FileWriter(csvOut, false));
+            bw.write("Export_plot data,,\n");
+            bw.write("Rebellion model,,\n");
+            bw.write(date + ",,\n");
+            bw.write(",,\n");
+            bw.write("Model Settings,,\n");
+            bw.write("Agent Density," +
+                    configurator.getAgentDensity() * 100 + "%,\n");
+            bw.write("Cop Density," +
+                    configurator.getCopDensity() * 100 + "%,\n");
+            bw.write("Vision," + configurator.getVision() + ",\n");
+            bw.write("Government Legitimacy," +
+                    configurator.getGovernmentLegitimacy() + ",\n");
+            bw.write("Max Jail Term," +
+                    configurator.getMaxJailTerm() + ",\n");
+            bw.write("Movement?," +
+                    Boolean.toString(configurator.isMovement()) + ",\n");
+            bw.write("Iteration times," +
+                    configurator.getIterationTimes() + ",\n");
+            bw.write(",,\n");
             bw.write("quiet, jailed, active\n");
-            bw.write(totalCount + ", 0, 0\n");
-            quietList.add(totalCount);
+            bw.write(agentCount + ", 0, 0\n");
+            quietList.add(agentCount);
             jailedList.add(0);
             activeList.add(0);
 
@@ -78,7 +98,9 @@ class Main{
                 int quietCount = 0;
                 int jailedCount = 0;
                 int activeCount = 0;
+
                 Object[] values = generateRandomArray(totalCount);
+
                 for (Object value : values) {
                     personList.get((int) value).action();
                 }
@@ -114,13 +136,18 @@ class Main{
 
     private static Object[] generateRandomArray(int size) {
         Random random = new Random();
-        HashMap<Integer, Integer> hashMap = new HashMap<>();
-        while (hashMap.size() < size) {
-            int number = random.nextInt(size);
-            hashMap.put(number, number);
-        }
+        ArrayList<Integer> rangeList = new ArrayList<>();
         Object[] values = new Object[size];
-        values = hashMap.keySet().toArray();
+        for (int i = 0; i < size; i++) {
+            rangeList.add(i);
+        }
+
+        for (int i = 0; i < size; i++) {
+            int maxIndex = rangeList.size();
+            int index = random.nextInt(maxIndex);
+            values[i] = rangeList.get(index);
+            rangeList.remove(index);
+        }
         return values;
     }
 }
