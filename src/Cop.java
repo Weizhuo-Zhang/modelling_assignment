@@ -1,9 +1,38 @@
+import java.util.ArrayList;
+import java.util.Random;
+
 public class Cop extends Person{
-    public Cop() {
-        super();
+    public Cop(Position position, int maxJailTerm) throws Exception{
+        super(position, maxJailTerm);
     }
 
-    public void arrest() {
+    public void action() {
+        ArrayList<Position> occupiedNeighbor =
+                this.getPosition().getOccupiedNeighborhood();
+        ArrayList<Agent> arrestList = new ArrayList<>();
+        for (Position neighbor : occupiedNeighbor) {
+            Person person = neighbor.getOccupiedPerson();
+            String className =
+                    person.getClass().getName();
+            if (className.equals("Agent")) {
+                if (((Agent) person).isActive()) {
+                    arrestList.add((Agent) person);
+                }
+            }
+        }
 
+        if (0 != arrestList.size()) {
+            Random random = new Random();
+            int maxIndex = arrestList.size();
+            int randomIndex = random.nextInt(maxIndex);
+            Agent arrestAgent = arrestList.get(randomIndex);
+            int jailTerm = random.nextInt(getMaxJailTerm() + 1);
+            arrestAgent.beArrested(jailTerm);
+            //return arrestAgent;
+            return;
+        } else {
+            //return null;
+            return;
+        }
     }
 }
