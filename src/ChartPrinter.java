@@ -25,27 +25,6 @@ public class ChartPrinter extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-//        final NumberAxis xAxis = new NumberAxis();
-//        final NumberAxis yAxis = new NumberAxis();
-//        xAxis.setLabel("Number of Month");
-//        final LineChart<Number, Number> lineChart = new LineChart<Number, Number>(
-//                xAxis, yAxis);
-//
-//        lineChart.setTitle("Line Chart");
-//        XYChart.Series<Number, Number> series = new XYChart.Series<Number,
-//                Number>();
-//        series.setName("My Data");
-//        // populating the series with data
-//        series.getData().add(new XYChart.Data<Number, Number>(1, 23));
-//        series.getData().add(new XYChart.Data<Number, Number>(2, 114));
-//        series.getData().add(new XYChart.Data<Number, Number>(3, 15));
-//        series.getData().add(new XYChart.Data<Number, Number>(4, 124));
-//
-//        Scene scene = new Scene(lineChart, 800, 600);
-//        lineChart.getData().add(series);
-//
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
 
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
@@ -54,6 +33,7 @@ public class ChartPrinter extends Application {
         final LineChart<Number, Number> lineChart =
                 new LineChart<Number, Number>(xAxis, yAxis);
         lineChart.setTitle("All agent types");
+        lineChart.setCreateSymbols(false);
 
         XYChart.Series<Number, Number> quietSeries =
                 new XYChart.Series<Number, Number>();

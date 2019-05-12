@@ -33,23 +33,26 @@ public class Agent extends Person{
         if (jailTerm > 0) {
             // If this agent is in jail
             decreaseJailTerm();
-        } else if (null == getPosition()){
-            // If this agent just leave the jail
-            this.setPosition(
-                    getPersonEnvironment().acquireAvailablePosition(this));
         } else {
-            // Agent is not in jail
-            double netRisk = getArrestedProbability() * riskAversion;
-            if ((getGrievance() - netRisk) > THRESHOLD) {
-                active = true;
-            } else {
-                active = false;
+            if (null == getPosition()) {
+                // If this agent just leave the jail, a new position will be
+                // allocated to him.
+                this.setPosition(
+                        getPersonEnvironment().acquireAvailablePosition(this));
             }
 
             // If movement switch is true, the agent can move to another
             // position
             if (this.getPersonEnvironment().isMovement()) {
                 move();
+            }
+
+            // Agent is not in jail
+            double netRisk = getArrestedProbability() * riskAversion;
+            if ((getGrievance() - netRisk) > THRESHOLD) {
+                active = true;
+            } else {
+                active = false;
             }
         }
     }

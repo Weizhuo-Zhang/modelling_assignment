@@ -7,6 +7,7 @@ public class Cop extends Person{
     }
 
     public void action() throws Exception {
+        move();
         ArrayList<Position> occupiedNeighbor =
                 this.getPosition().getOccupiedNeighborhood();
         ArrayList<Agent> arrestList = new ArrayList<>();
@@ -30,6 +31,5 @@ public class Cop extends Person{
                     getPersonEnvironment().getMaxJailTerm() + 1);
             arrestAgent.beArrested(jailTerm);
         }
-        move();
     }
 }

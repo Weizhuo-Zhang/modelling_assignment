@@ -109,9 +109,9 @@ class Main{
                     if (agent.getJailTerm() > 0) {
                         // Agent is in jail
                         jailedCount++;
-                    } else if (null == agent.getPosition()) {
-                        // Agent will leave jail in next turn
-                        jailedCount++;
+//                    } else if (null == agent.getPosition()) {
+//                        // Agent will leave jail in next turn
+//                        jailedCount++;
                     } else if (agent.isActive()) {
                         activeCount++;
                     } else {
