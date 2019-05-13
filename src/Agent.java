@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Agent extends Person{
+    public static final int NO_JAIL_TERM = 0;
     // K is a positive constant value to ensure reasonable value of
     // estimated arrested probability.
     private static final float K = 2.3f;
@@ -30,7 +31,7 @@ public class Agent extends Person{
     }
 
     public void action() throws Exception {
-        if (jailTerm == 0) {
+        if (NO_JAIL_TERM == jailTerm) {
             // If movement switch is true, the agent can move to another
             // position
             if (this.getPersonEnvironment().isMovement()) {
@@ -102,12 +103,12 @@ public class Agent extends Person{
         for (Position neighbor : occupiedNeighbor) {
             String className =
                     neighbor.getOccupiedPerson().getClass().getName();
-            if (className.equals("Agent")) {
+            if (className.equals(Person.AGENT)) {
                 Agent agent = (Agent)neighbor.getOccupiedPerson();
                 if (agent.isActive()) {
                     agentCount++;
                 }
-            } else if (className.equals("Cop")) {
+            } else if (className.equals(Person.COP)) {
                 copCount++;
             }
         }
@@ -119,7 +120,7 @@ public class Agent extends Person{
     }
 
     public void decreaseJailTerm() throws Exception {
-        if (jailTerm > 0) {
+        if (jailTerm > NO_JAIL_TERM) {
             jailTerm--;
         } else {
             throw new Exception("Invalid decrease jailTerm! JailTerm is less " +

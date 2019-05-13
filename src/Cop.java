@@ -15,7 +15,7 @@ public class Cop extends Person{
             Person person = neighbor.getOccupiedPerson();
             String className =
                     person.getClass().getName();
-            if (className.equals("Agent")) {
+            if (className.equals(Person.AGENT)) {
                 if (((Agent) person).isActive()) {
                     arrestList.add((Agent) person);
                 }

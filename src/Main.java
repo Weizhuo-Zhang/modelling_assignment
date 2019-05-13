@@ -106,7 +106,7 @@ class Main{
                 }
 
                 for (Agent agent : agentList) {
-                    if (agent.getJailTerm() > 0) {
+                    if (agent.getJailTerm() > Agent.NO_JAIL_TERM) {
                         // Agent is in jail
                         agent.decreaseJailTerm();
                         jailedCount++;
