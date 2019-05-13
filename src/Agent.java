@@ -30,31 +30,56 @@ public class Agent extends Person{
     }
 
     public void action() throws Exception {
-        if (jailTerm > 0) {
-            // If this agent is in jail
-            decreaseJailTerm();
-        } else {
-            if (null == getPosition()) {
-                // If this agent just leave the jail, a new position will be
-                // allocated to him.
-                this.setPosition(
-                        getPersonEnvironment().acquireAvailablePosition(this));
-            }
-
+        if (jailTerm == 0) {
             // If movement switch is true, the agent can move to another
             // position
             if (this.getPersonEnvironment().isMovement()) {
                 move();
+            } else {
+                Position position = this.getPosition();
+                if (null == position.getOccupiedPerson()) {
+                    position.occupy(this);
+                }
             }
 
             // Agent is not in jail
-            double netRisk = getArrestedProbability() * riskAversion;
-            if ((getGrievance() - netRisk) > THRESHOLD) {
+            double arrestedProbability = getArrestedProbability();
+            double netRisk = arrestedProbability * riskAversion;
+            double grievance = getGrievance();
+            if ((grievance - netRisk) > THRESHOLD) {
                 active = true;
             } else {
                 active = false;
             }
         }
+
+//        if (jailTerm > 0) {
+//            // If this agent is in jail
+//            decreaseJailTerm();
+//        } else {
+////            if (null == getPosition()) {
+////                // If this agent just leave the jail, a new position will be
+////                // allocated to him.
+////                this.setPosition(
+////                        getPersonEnvironment().acquireAvailablePosition(this));
+////            }
+//
+//            // If movement switch is true, the agent can move to another
+//            // position
+//            if (this.getPersonEnvironment().isMovement()) {
+//                move();
+//            }
+//
+//            // Agent is not in jail
+//            double arrestedProbability = getArrestedProbability();
+//            double netRisk = arrestedProbability * riskAversion;
+//            double grievance = getGrievance();
+//            if ((grievance - netRisk) > THRESHOLD) {
+//                active = true;
+//            } else {
+//                active = false;
+//            }
+//        }
     }
 
     public void beArrested(int jailTerm) throws Exception {
@@ -78,18 +103,22 @@ public class Agent extends Person{
             String className =
                     neighbor.getOccupiedPerson().getClass().getName();
             if (className.equals("Agent")) {
-                agentCount++;
+                Agent agent = (Agent)neighbor.getOccupiedPerson();
+                if (agent.isActive()) {
+                    agentCount++;
+                }
             } else if (className.equals("Cop")) {
                 copCount++;
             }
         }
 
+        double ratio = Math.floor(copCount / agentCount);
         double estimatedArrestedProbability =
-                1 - Math.exp((-1) * K * (double)(copCount / agentCount));
+                1 - Math.exp(-1 * K * ratio);
         return estimatedArrestedProbability;
     }
 
-    private void decreaseJailTerm() throws Exception {
+    public void decreaseJailTerm() throws Exception {
         if (jailTerm > 0) {
             jailTerm--;
         } else {

@@ -76,16 +76,16 @@ public class Position {
         if (0 == availableNeighborhood.size()) {
             return null;
         } else {
-            if (person.equals(this.occupied)) {
-                occupied = null;
-                Random random = new Random();
-                int maxIndex = availableNeighborhood.size();
-                int randomIndex = random.nextInt(maxIndex);
-                return availableNeighborhood.get(randomIndex);
-            } else {
-                throw  new Exception("Invalid move! The parameter person is " +
-                        "not same as the person in this position");
-            }
+//            if (person.equals(this.occupied)) {
+            occupied = null;
+            Random random = new Random();
+            int maxIndex = availableNeighborhood.size();
+            int randomIndex = random.nextInt(maxIndex);
+            return availableNeighborhood.get(randomIndex);
+//            } else {
+//                throw  new Exception("Invalid move! The parameter person is " +
+//                        "not same as the person in this position");
+//            }
         }
     }
 

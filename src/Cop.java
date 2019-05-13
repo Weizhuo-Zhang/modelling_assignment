@@ -28,7 +28,7 @@ public class Cop extends Person{
             int randomIndex = random.nextInt(maxIndex);
             Agent arrestAgent = arrestList.get(randomIndex);
             int jailTerm = random.nextInt(
-                    getPersonEnvironment().getMaxJailTerm() + 1);
+                    getPersonEnvironment().getMaxJailTerm());
             arrestAgent.beArrested(jailTerm);
         }
     }

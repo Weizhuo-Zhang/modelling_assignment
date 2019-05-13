@@ -133,7 +133,7 @@ public class Environment {
         Position position = person.getPosition();
         availablePosition.add(position);
         position.occupy(null);
-        person.setPosition(null);
+        //person.setPosition(null);
     }
 
     // Init the environment map

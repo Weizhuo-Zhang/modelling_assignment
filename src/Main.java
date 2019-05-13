@@ -108,6 +108,7 @@ class Main{
                 for (Agent agent : agentList) {
                     if (agent.getJailTerm() > 0) {
                         // Agent is in jail
+                        agent.decreaseJailTerm();
                         jailedCount++;
 //                    } else if (null == agent.getPosition()) {
 //                        // Agent will leave jail in next turn
