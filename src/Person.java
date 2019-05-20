@@ -1,6 +1,6 @@
 public abstract class Person {
     public static final String AGENT = "Agent";
-    public static final String COP = "COP";
+    public static final String COP = "Cop";
 
     private Position position;
     private Environment environment;
