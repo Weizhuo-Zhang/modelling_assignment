@@ -63,6 +63,7 @@ class Main{
             ArrayList<Integer> quietList = new ArrayList<>();
             ArrayList<Integer> jailedList = new ArrayList<>();
             ArrayList<Integer> activeList = new ArrayList<>();
+            ArrayList<Integer> waitingTimeList = new ArrayList<>();
             SimpleDateFormat df =
                     new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss");
             String date = df.format(new Date());
@@ -93,6 +94,9 @@ class Main{
             quietList.add(agentCount);
             jailedList.add(0);
             activeList.add(0);
+            int waitingTime = 0;
+            int activeTime = 0;
+            int internal = 10;
 
             for (int i = 0; i < iterationTimes; i++) {
                 int quietCount = 0;
@@ -119,6 +123,19 @@ class Main{
                         quietCount++;
                     }
                 }
+
+                if (activeCount > 50) {
+                    activeTime++;
+                } else {
+                    waitingTime++;
+                }
+
+                if (0 == (activeTime % internal) && 0 != activeTime) {
+                    waitingTimeList.add(waitingTime);
+                    waitingTime = 0;
+                    internal += 10;
+                }
+
                 bw.write(quietCount + ", " +
                         jailedCount + ", " + activeCount +"\n");
                 quietList.add(quietCount);
@@ -128,7 +145,8 @@ class Main{
 
             bw.flush();
             bw.close();
-            ChartPrinter.main(args, quietList, jailedList, activeList);
+            ChartPrinter.main(
+                    args, quietList, jailedList, activeList, waitingTimeList);
         } catch (Exception e) {
             System.err.println("[ERROR]: " + e.getMessage());
             e.printStackTrace();
