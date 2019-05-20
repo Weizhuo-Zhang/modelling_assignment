@@ -83,10 +83,10 @@ public class Agent extends Person{
 //        }
     }
 
-    public void beArrested(int jailTerm) throws Exception {
+    public void beArrested(int jailTerm, Person cop) throws Exception {
         this.active = false;
         this.jailTerm = jailTerm;
-        this.getPersonEnvironment().releasePosition(this);
+        this.getPersonEnvironment().releasePosition(this, cop);
     }
 
     private double getGrievance() {

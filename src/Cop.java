@@ -29,7 +29,7 @@ public class Cop extends Person{
             Agent arrestAgent = arrestList.get(randomIndex);
             int jailTerm = random.nextInt(
                     getPersonEnvironment().getMaxJailTerm());
-            arrestAgent.beArrested(jailTerm);
+            arrestAgent.beArrested(jailTerm, this);
         }
     }
 }

@@ -130,10 +130,14 @@ public class Environment {
         }
     }
 
-    public void releasePosition(Person person) throws Exception {
+    public void releasePosition(Person person, Person cop) throws Exception {
         Position position = person.getPosition();
-        availablePosition.add(position);
+        Position copPosition = cop.getPosition();
+        cop.setPosition(position);
         position.occupy(null);
+        position.occupy(cop);
+        availablePosition.add(copPosition);
+        copPosition.occupy(null);
         //person.setPosition(null);
     }
 
