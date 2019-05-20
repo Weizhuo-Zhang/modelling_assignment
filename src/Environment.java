@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Set;
 
 /*
     Usage: Allocate and protect the environment which contains a grid map.
@@ -182,7 +183,7 @@ public class Environment {
             for (int x = 0; x < mapWidth; x++) {
                 // Width index is x coordinate
                 // Height index is y coordinate
-                ArrayList<Position> neighbor =
+                Set<Position> neighbor =
                         environmentMap[y][x].getNeighborhood(environment);
                 System.out.print(neighbor.size() + "\t");
             }
