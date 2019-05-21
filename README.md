@@ -5,13 +5,16 @@ This repository is for `SWEN90004 - Modelling Complex Software System` Assignmen
 - Java environment: `jdk1.8.0_211`
 - Please check the parameters in `src/config.properties`
 
-## Compilation Instruction
+## Compilation Instruction (linux and mac)
 `cd src/`
 
 `javac Main.java`
 
-## Running Instruction for (linux and mac)
+## Running Instruction 
 `java Main`
+
+## Result generated
+This program will generate a `.csv` file under the executable path and two line charts, one for the number of agents in different status and one for waiting times extension.
 
 ## Members of the team
 - Aaron
