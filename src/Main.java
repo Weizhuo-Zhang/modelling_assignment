@@ -95,8 +95,8 @@ class Main{
             jailedList.add(0);
             activeList.add(0);
             int waitingTime = 0;
-            int activeTime = 0;
-            int internal = 10;
+//            int activeTime = 0;
+//            int internal = 10;
 
             for (int i = 0; i < iterationTimes; i++) {
                 int quietCount = 0;
@@ -125,16 +125,20 @@ class Main{
                 }
 
                 if (activeCount > 50) {
-                    activeTime++;
+                    if (0 != waitingTime) {
+                        waitingTimeList.add(waitingTime);
+                        waitingTime = 0;
+                    }
+//                    activeTime++;
                 } else {
                     waitingTime++;
                 }
 
-                if (0 == (activeTime % internal) && 0 != activeTime) {
-                    waitingTimeList.add(waitingTime);
-                    waitingTime = 0;
-                    internal += 10;
-                }
+//                if (0 == (activeTime % internal) && 0 != activeTime) {
+//                    waitingTimeList.add(waitingTime);
+//                    waitingTime = 0;
+//                    internal += 10;
+//                }
 
                 bw.write(quietCount + ", " +
                         jailedCount + ", " + activeCount +"\n");
@@ -145,8 +149,15 @@ class Main{
 
             bw.flush();
             bw.close();
+            Collections.sort(waitingTimeList);
+            ArrayList<Integer> waitingFrequencyList =
+                    computeFrequency(waitingTimeList);
             ChartPrinter.main(
-                    args, quietList, jailedList, activeList, waitingTimeList);
+                    args,
+                    quietList,
+                    jailedList,
+                    activeList,
+                    waitingFrequencyList);
         } catch (Exception e) {
             System.err.println("[ERROR]: " + e.getMessage());
             e.printStackTrace();
@@ -168,5 +179,28 @@ class Main{
             rangeList.remove(index);
         }
         return values;
+    }
+
+    private static ArrayList<Integer> computeFrequency(
+            ArrayList<Integer> sortedList) {
+        int length = sortedList.size();
+        int maxNum = (int)Math.ceil((float)sortedList.get(length - 1) * 0.1);
+        int cursor = 0;
+        ArrayList<Integer> frequencyList = new ArrayList<>();
+        for (int i = 0; i < maxNum; i++) {
+            int count = 0;
+            for (;cursor < length; cursor++) {
+                int tempValue = sortedList.get(cursor);
+                if (tempValue >= i * 10 && tempValue <= (i + 1) * 10) {
+                    count++;
+                } else {
+                    frequencyList.add(count);
+                    cursor++;
+                    break;
+                }
+            }
+
+        }
+        return frequencyList;
     }
 }
