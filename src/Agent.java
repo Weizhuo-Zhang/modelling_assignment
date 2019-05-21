@@ -1,6 +1,14 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+/*
+    Usage: Class for simulating the Agent
+    Author:
+        Heming Li       804996      hemingl1@student.unimelb.edu.au
+        An Luo          657605      aluo1@student.unimelb.edu.au
+        Weizhuo Zhang   1018329     weizhuoz@student.unimelb.edu.au
+ */
+
 public class Agent extends Person{
     public static final int NO_JAIL_TERM = 0;
     // K is a positive constant value to ensure reasonable value of
@@ -30,6 +38,7 @@ public class Agent extends Person{
         return jailTerm;
     }
 
+    // Action method is implemented from its superclass
     public void action() throws Exception {
         if (NO_JAIL_TERM == jailTerm) {
             // If movement switch is true, the agent can move to another
@@ -83,18 +92,32 @@ public class Agent extends Person{
 //        }
     }
 
+    // If this agent is arrested, it will release its position
     public void beArrested(int jailTerm, Person cop) throws Exception {
         this.active = false;
         this.jailTerm = jailTerm;
         this.getPersonEnvironment().releasePosition(this, cop);
     }
 
+    // Decrease the jail term for jailed agents
+    public void decreaseJailTerm() throws Exception {
+        if (jailTerm > NO_JAIL_TERM) {
+            jailTerm--;
+        } else {
+            throw new Exception("Invalid decrease jailTerm! JailTerm is less " +
+                    "than or equals 0.");
+        }
+    }
+
+    // Compute current grievance for this agent.
     private double getGrievance() {
         double antiGovernment =
                 1.0 - getPersonEnvironment().getGovernmentLegitimacy();
         return (perceivedHardship * antiGovernment);
     }
 
+    // Compute the probability of been arrested
+    // Formula given by NetLogo
     private double getArrestedProbability() {
         ArrayList<Position> occupiedNeighbor =
                 this.getPosition().getOccupiedNeighborhood();
@@ -117,14 +140,5 @@ public class Agent extends Person{
         double estimatedArrestedProbability =
                 1 - Math.exp(-1 * K * ratio);
         return estimatedArrestedProbability;
-    }
-
-    public void decreaseJailTerm() throws Exception {
-        if (jailTerm > NO_JAIL_TERM) {
-            jailTerm--;
-        } else {
-            throw new Exception("Invalid decrease jailTerm! JailTerm is less " +
-                    "than or equals 0.");
-        }
     }
 }

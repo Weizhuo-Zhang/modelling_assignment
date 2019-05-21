@@ -55,30 +55,39 @@ public class Position {
             // must less than or equal as vision
             for (int x = left; x <= right; x++) {
                 int shiftX = x;
+                // if this (x,y) is out of the map, we need to mapping this
+                // point to the point within the map
+                // Left and Right border are connected
                 if (x < 0) {
                     shiftX = environment.getMapWidth() + x;
+                    // If this point is far away
                     if (shiftX < 0) {
                         continue;
                     }
                 } else if (x >= environment.getMapWidth()) {
                     shiftX = x - environment.getMapWidth();
+                    // If this point is far away
                     if (shiftX >= environment.getMapWidth()) {
                         continue;
                     }
                 }
                 for (int y = top; y <= bottom; y++) {
                     int shiftY = y;
+                    // Top and Bottom border are connected
                     if (y < 0) {
                         shiftY = environment.getMapHeight() + y;
+                        // If this point is far away
                         if (shiftY < 0) {
                             continue;
                         }
                     } else if (y >= environment.getMapHeight()){
                         shiftY = y - environment.getMapHeight();
+                        // If this point is far away
                         if (shiftY >= environment.getMapHeight()) {
                             continue;
                         }
                     }
+                    // Compute the euclidean distance
                     float distance =
                             computeDistance(coordinateX, coordinateY, x, y);
                     if (distance <= environment.getVision()){

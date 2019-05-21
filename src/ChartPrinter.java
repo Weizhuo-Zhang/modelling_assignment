@@ -9,6 +9,15 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
+/*
+    Usage: Class used for printing the charts
+        It is convenient to check the correctness of our model and design.
+    Author:
+        Heming Li       804996      hemingl1@student.unimelb.edu.au
+        An Luo          657605      aluo1@student.unimelb.edu.au
+        Weizhuo Zhang   1018329     weizhuoz@student.unimelb.edu.au
+ */
+
 public class ChartPrinter extends Application {
     private static ArrayList<Integer> quietList;
     private static ArrayList<Integer> jailedList;
@@ -73,6 +82,7 @@ public class ChartPrinter extends Application {
 
     }
 
+    // Print the waiting times frequency chart
     private void extensionStage() {
         Stage secondStage = new Stage();
         final NumberAxis xAxis = new NumberAxis();
@@ -102,6 +112,7 @@ public class ChartPrinter extends Application {
         secondStage.show();
     }
 
+    // Set color for each line
     private void setRGBColor(
             XYChart.Series series,
             int red, int green, int blue) {

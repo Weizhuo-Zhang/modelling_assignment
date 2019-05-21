@@ -124,6 +124,7 @@ class Main{
                     }
                 }
 
+                // Used for compute the frequency of the waiting times
                 if (activeCount > 50) {
                     if (0 != waitingTime) {
                         waitingTimeList.add(waitingTime);
@@ -149,9 +150,13 @@ class Main{
 
             bw.flush();
             bw.close();
+
+            // Compute the frequency of this model
             Collections.sort(waitingTimeList);
             ArrayList<Integer> waitingFrequencyList =
                     computeFrequency(waitingTimeList);
+
+            // Print chart
             ChartPrinter.main(
                     args,
                     quietList,
@@ -164,6 +169,7 @@ class Main{
         }
     }
 
+    // Generate random array for given size
     private static Object[] generateRandomArray(int size) {
         Random random = new Random();
         ArrayList<Integer> rangeList = new ArrayList<>();
@@ -181,6 +187,7 @@ class Main{
         return values;
     }
 
+    // Compute the frequency from [0,10], (10,11],...(10n,11n] n is natural num
     private static ArrayList<Integer> computeFrequency(
             ArrayList<Integer> sortedList) {
         int length = sortedList.size();

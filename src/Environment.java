@@ -130,6 +130,9 @@ public class Environment {
         }
     }
 
+    // Release position of current person, as the person is arrested by the cop
+    // Cop will occupy the position of this person, and the position of the
+    // cop will be set as available
     public void releasePosition(Person person, Person cop) throws Exception {
         Position position = person.getPosition();
         Position copPosition = cop.getPosition();
