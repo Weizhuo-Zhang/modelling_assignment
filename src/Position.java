@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 /*
     Usage: Each position indicates each grid in the map.
@@ -13,7 +15,7 @@ import java.util.Random;
 public class Position {
     private int coordinateX;
     private int coordinateY;
-    private ArrayList<Position> neighborhood;
+    private Set<Position> neighborhood;
     private Person occupied;
 
     public Position(int coordinateX, int coordinateY) {
@@ -22,9 +24,9 @@ public class Position {
     }
 
     // Init and get the neighborhood of this position
-    public ArrayList<Position> getNeighborhood(Environment environment) {
+    public Set<Position> getNeighborhood(Environment environment) {
         if (null == neighborhood) {
-            neighborhood = new ArrayList<>();
+            neighborhood = new HashSet<>();
 
             int left =
                     coordinateX - (int)Math.floor(environment.getVision());
@@ -35,28 +37,62 @@ public class Position {
             int bottom =
                     coordinateY + (int)Math.floor(environment.getVision());
 
-            // For ensure neighborhood is within the map
-            if (left < 0) {
-                left = 0;
-            }
-            if (right >= environment.getMapWidth()) {
-                right = environment.getMapWidth() - 1;
-            }
-            if (top < 0) {
-                top = 0;
-            }
-            if (bottom >= environment.getMapHeight()) {
-                bottom = environment.getMapHeight() - 1;
-            }
+//            // For ensure neighborhood is within the map
+//            if (left < 0) {
+//                left = 0;
+//            }
+//            if (right >= environment.getMapWidth()) {
+//                right = environment.getMapWidth() - 1;
+//            }
+//            if (top < 0) {
+//                top = 0;
+//            }
+//            if (bottom >= environment.getMapHeight()) {
+//                bottom = environment.getMapHeight() - 1;
+//            }
 
             // The distance between neighborhood position and this position
             // must less than or equal as vision
             for (int x = left; x <= right; x++) {
+                int shiftX = x;
+                // if this (x,y) is out of the map, we need to mapping this
+                // point to the point within the map
+                // Left and Right border are connected
+                if (x < 0) {
+                    shiftX = environment.getMapWidth() + x;
+                    // If this point is far away
+                    if (shiftX < 0) {
+                        continue;
+                    }
+                } else if (x >= environment.getMapWidth()) {
+                    shiftX = x - environment.getMapWidth();
+                    // If this point is far away
+                    if (shiftX >= environment.getMapWidth()) {
+                        continue;
+                    }
+                }
                 for (int y = top; y <= bottom; y++) {
+                    int shiftY = y;
+                    // Top and Bottom border are connected
+                    if (y < 0) {
+                        shiftY = environment.getMapHeight() + y;
+                        // If this point is far away
+                        if (shiftY < 0) {
+                            continue;
+                        }
+                    } else if (y >= environment.getMapHeight()){
+                        shiftY = y - environment.getMapHeight();
+                        // If this point is far away
+                        if (shiftY >= environment.getMapHeight()) {
+                            continue;
+                        }
+                    }
+                    // Compute the euclidean distance
                     float distance =
                             computeDistance(coordinateX, coordinateY, x, y);
                     if (distance <= environment.getVision()){
-                        neighborhood.add(environment.getPosition(x, y));
+                        neighborhood.add(
+                                environment.getPosition(shiftX, shiftY));
                     }
                 }
             }

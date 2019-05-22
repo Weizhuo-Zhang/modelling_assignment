@@ -63,6 +63,7 @@ class Main{
             ArrayList<Integer> quietList = new ArrayList<>();
             ArrayList<Integer> jailedList = new ArrayList<>();
             ArrayList<Integer> activeList = new ArrayList<>();
+            ArrayList<Integer> waitingTimeList = new ArrayList<>();
             SimpleDateFormat df =
                     new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss");
             String date = df.format(new Date());
@@ -93,6 +94,9 @@ class Main{
             quietList.add(agentCount);
             jailedList.add(0);
             activeList.add(0);
+            int waitingTime = 0;
+//            int activeTime = 0;
+//            int internal = 10;
 
             for (int i = 0; i < iterationTimes; i++) {
                 int quietCount = 0;
@@ -119,6 +123,24 @@ class Main{
                         quietCount++;
                     }
                 }
+
+                // Used for compute the frequency of the waiting times
+                if (activeCount > 50) {
+                    if (0 != waitingTime) {
+                        waitingTimeList.add(waitingTime);
+                        waitingTime = 0;
+                    }
+//                    activeTime++;
+                } else {
+                    waitingTime++;
+                }
+
+//                if (0 == (activeTime % internal) && 0 != activeTime) {
+//                    waitingTimeList.add(waitingTime);
+//                    waitingTime = 0;
+//                    internal += 10;
+//                }
+
                 bw.write(quietCount + ", " +
                         jailedCount + ", " + activeCount +"\n");
                 quietList.add(quietCount);
@@ -128,13 +150,26 @@ class Main{
 
             bw.flush();
             bw.close();
-            ChartPrinter.main(args, quietList, jailedList, activeList);
+
+            // Compute the frequency of this model
+            Collections.sort(waitingTimeList);
+            ArrayList<Integer> waitingFrequencyList =
+                    computeFrequency(waitingTimeList);
+
+            // Print chart
+            ChartPrinter.main(
+                    args,
+                    quietList,
+                    jailedList,
+                    activeList,
+                    waitingFrequencyList);
         } catch (Exception e) {
             System.err.println("[ERROR]: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    // Generate random array for given size
     private static Object[] generateRandomArray(int size) {
         Random random = new Random();
         ArrayList<Integer> rangeList = new ArrayList<>();
@@ -150,5 +185,29 @@ class Main{
             rangeList.remove(index);
         }
         return values;
+    }
+
+    // Compute the frequency from [0,10], (10,11],...(10n,11n] n is natural num
+    private static ArrayList<Integer> computeFrequency(
+            ArrayList<Integer> sortedList) {
+        int length = sortedList.size();
+        int maxNum = (int)Math.ceil((float)sortedList.get(length - 1) * 0.1);
+        int cursor = 0;
+        ArrayList<Integer> frequencyList = new ArrayList<>();
+        for (int i = 0; i < maxNum; i++) {
+            int count = 0;
+            for (;cursor < length; cursor++) {
+                int tempValue = sortedList.get(cursor);
+                if (tempValue >= i * 10 && tempValue <= (i + 1) * 10) {
+                    count++;
+                } else {
+                    frequencyList.add(count);
+                    cursor++;
+                    break;
+                }
+            }
+
+        }
+        return frequencyList;
     }
 }
