@@ -1,4 +1,6 @@
-import java.util.ResourceBundle;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.HashMap;
 
 /**
  * Usage: reading the parameters in DEFAULT_CONFIG_FILE_PATH.properties file
@@ -42,17 +44,28 @@ public class Configurator {
 
   public Configurator(String configFilePath) throws Exception {
     // Read resource file (configuration file)
-    ResourceBundle resource = ResourceBundle.getBundle(configFilePath);
-    copDensity = Float.parseFloat(resource.getString(COP_DENSITY_LABEL));
-    agentDensity = Float.parseFloat(resource.getString(AGENT_DENSITY_LABEL));
-    vision = Float.parseFloat(resource.getString(VISION_LABEL));
-    governmentLegitimacy = Float.parseFloat(resource.getString(GOVERNMENT_LEGITIMACY_LABEL));
-    maxJailTerm = Integer.parseInt(resource.getString(MAX_JAIL_TERM_LABEL));
-    movementSwitch = Boolean.parseBoolean(resource.getString(MOVEMENT_SWITCH_LABEL));
-    iterationTimes = Integer.parseInt(resource.getString(ITERATION_TIMES_LABEL));
+    BufferedReader bufferedReader = new BufferedReader(new FileReader(configFilePath));
+    HashMap<String, String> configValues = new HashMap<>();
+    String line;
+    while ((line = bufferedReader.readLine()) != null) {
+      System.out.println(line);
+      String[] configLineComponent = line.split("=");
+      if (configLineComponent.length == 2) {
+        configValues.put(configLineComponent[0], configLineComponent[1]);
+      }
+    }
+
+    // Load the data from config file into the instance variables.
+    copDensity = Float.parseFloat(configValues.get(COP_DENSITY_LABEL));
+    agentDensity = Float.parseFloat(configValues.get(AGENT_DENSITY_LABEL));
+    vision = Float.parseFloat(configValues.get(VISION_LABEL));
+    governmentLegitimacy = Float.parseFloat(configValues.get(GOVERNMENT_LEGITIMACY_LABEL));
+    maxJailTerm = Integer.parseInt(configValues.get(MAX_JAIL_TERM_LABEL));
+    movementSwitch = Boolean.parseBoolean(configValues.get(MOVEMENT_SWITCH_LABEL));
+    iterationTimes = Integer.parseInt(configValues.get(ITERATION_TIMES_LABEL));
 
     try {
-      outputFileName = resource.getString(OUTPUT_FILE_NAME_LABEL);
+      outputFileName = configValues.get(OUTPUT_FILE_NAME_LABEL);
     } catch (Exception e) {
       outputFileName = "";
     }
