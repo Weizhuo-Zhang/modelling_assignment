@@ -1,25 +1,35 @@
 import java.util.ResourceBundle;
 
-/*
-   Usage: reading the parameters in CONFIG_FILE_PATH.properties file
-   Author:
-       Heming Li       804996      hemingl1@student.unimelb.edu.au
-       An Luo          657605      aluo1@student.unimelb.edu.au
-       Weizhuo Zhang   1018329     weizhuoz@student.unimelb.edu.au
-*/
-
+/**
+ * Usage: reading the parameters in DEFAULT_CONFIG_FILE_PATH.properties file
+ *
+ * @author Weizhuo Zhang (1018329) - weizhuoz@student.unimelb.edu.au
+ * @author Heming Li (804996) - hemingl1@student.unimelb.edu.au
+ * @author An Luo (657605) - aluo1@student.unimelb.edu.au
+ */
 public class Configurator {
-  public static final int MAP_WIDTH = 40;
+  public final int MAP_WIDTH = 40;
   public final int MAP_HEIGHT = 40;
-  private static final float DENSITY_MIN = 0.0f;
-  private static final float DENSITY_MAX = 100.0f;
-  private static final float VISION_MIN = 0.0f;
-  private static final float VISION_MAX = 10.0f;
-  private static final float GOVERNMENT_LEGITIMACY_MIN = 0.0f;
-  private static final float GOVERNMENT_LEGITIMACY_MAX = 1.0f;
-  private static final int MAX_JAIL_TERM_MIN = 0;
-  private static final int MAX_JAIL_TERM_MAX = 50;
-  private static String CONFIG_FILE_PATH = "config";
+
+  private final String COP_DENSITY_LABEL = "COP_DENSITY";
+  private final String AGENT_DENSITY_LABEL = "AGENT_DENSITY";
+  private final String VISION_LABEL = "VISION";
+  private final String GOVERNMENT_LEGITIMACY_LABEL = "GOVERNMENT_LEGITIMACY";
+  private final String MAX_JAIL_TERM_LABEL = "MAX_JAIL_TERM";
+  private final String MOVEMENT_SWITCH_LABEL = "MOVEMENT_SWITCH";
+  private final String ITERATION_TIMES_LABEL = "ITERATION_TIMES";
+  private final String OUTPUT_FILE_NAME_LABEL = "OUTPUT_FILE_NAME";
+
+  private final float DENSITY_MIN = 0.0f;
+  private final float DENSITY_MAX = 100.0f;
+  private final float VISION_MIN = 0.0f;
+  private final float VISION_MAX = 10.0f;
+  private final float GOVERNMENT_LEGITIMACY_MIN = 0.0f;
+  private final float GOVERNMENT_LEGITIMACY_MAX = 1.0f;
+  private final int MAX_JAIL_TERM_MIN = 0;
+  private final int MAX_JAIL_TERM_MAX = 50;
+
+  private static String DEFAULT_CONFIG_FILE_PATH = "config";
 
   private float copDensity;
   private float agentDensity;
@@ -27,19 +37,26 @@ public class Configurator {
   private float governmentLegitimacy;
   private int maxJailTerm;
   private boolean movementSwitch;
-
   private int iterationTimes;
+  private String outputFileName;
 
   public Configurator(String configFilePath) throws Exception {
     // Read resource file (configuration file)
     ResourceBundle resource = ResourceBundle.getBundle(configFilePath);
-    copDensity = Float.parseFloat(resource.getString("COP_DENSITY"));
-    agentDensity = Float.parseFloat(resource.getString("AGENT_DENSITY"));
-    vision = Float.parseFloat(resource.getString("VISION"));
-    governmentLegitimacy = Float.parseFloat(resource.getString("GOVERNMENT_LEGITIMACY"));
-    maxJailTerm = Integer.parseInt(resource.getString("MAX_JAIL_TERM"));
-    movementSwitch = Boolean.parseBoolean(resource.getString("MOVEMENT_SWITCH"));
-    iterationTimes = Integer.parseInt(resource.getString("ITERATION_TIMES"));
+    copDensity = Float.parseFloat(resource.getString(COP_DENSITY_LABEL));
+    agentDensity = Float.parseFloat(resource.getString(AGENT_DENSITY_LABEL));
+    vision = Float.parseFloat(resource.getString(VISION_LABEL));
+    governmentLegitimacy = Float.parseFloat(resource.getString(GOVERNMENT_LEGITIMACY_LABEL));
+    maxJailTerm = Integer.parseInt(resource.getString(MAX_JAIL_TERM_LABEL));
+    movementSwitch = Boolean.parseBoolean(resource.getString(MOVEMENT_SWITCH_LABEL));
+    iterationTimes = Integer.parseInt(resource.getString(ITERATION_TIMES_LABEL));
+
+    try {
+      outputFileName = resource.getString(OUTPUT_FILE_NAME_LABEL);
+    } catch (Exception e) {
+      outputFileName = "";
+    }
+
     // Check the range of parameters
     checkParameters();
     copDensity = copDensity * 0.01f;
@@ -47,7 +64,7 @@ public class Configurator {
   }
 
   public Configurator() throws Exception {
-    this(CONFIG_FILE_PATH);
+    this(DEFAULT_CONFIG_FILE_PATH);
   }
 
   public float getCopDensity() {
@@ -78,6 +95,10 @@ public class Configurator {
     return iterationTimes;
   }
 
+  public String getOutputFileName() {
+    return this.outputFileName;
+  }
+
   // Check the range of the parameters
   private void checkParameters() throws Exception {
     checkDensity();
@@ -92,7 +113,11 @@ public class Configurator {
     if (totalDensity <= DENSITY_MIN || totalDensity >= DENSITY_MAX) {
       throw new Exception(
           "Invalid density! Please ensure "
-              + "(COP_DENSITY + AGENT_DENSITY) is between ("
+              + "("
+              + COP_DENSITY_LABEL
+              + "+ "
+              + AGENT_DENSITY_LABEL
+              + ") is between ("
               + DENSITY_MIN
               + ", "
               + DENSITY_MAX
@@ -104,7 +129,9 @@ public class Configurator {
   private void checkVision() throws Exception {
     if (vision < VISION_MIN || vision > VISION_MAX) {
       throw new Exception(
-          "Invalid vision! Please ensure VISION is "
+          "Invalid vision! Please ensure "
+              + VISION_LABEL
+              + " is "
               + "between ["
               + VISION_MIN
               + ", "
@@ -118,8 +145,9 @@ public class Configurator {
     if (governmentLegitimacy < GOVERNMENT_LEGITIMACY_MIN
         || governmentLegitimacy > GOVERNMENT_LEGITIMACY_MAX) {
       throw new Exception(
-          "Invalid government legitimacy! Please ensure"
-              + " GOVERNMENT_LEGITIMACY is between ["
+          "Invalid government legitimacy! Please ensure "
+              + GOVERNMENT_LEGITIMACY_LABEL
+              + " is between ["
               + GOVERNMENT_LEGITIMACY_MIN
               + ", "
               + GOVERNMENT_LEGITIMACY_MAX
@@ -132,7 +160,8 @@ public class Configurator {
     if (maxJailTerm < MAX_JAIL_TERM_MIN || maxJailTerm > MAX_JAIL_TERM_MAX) {
       throw new Exception(
           "Invalid max jail term! Please ensure "
-              + "MAX_JAIL_TERM is between ["
+              + MAX_JAIL_TERM_LABEL
+              + " is between ["
               + MAX_JAIL_TERM_MIN
               + ", "
               + MAX_JAIL_TERM_MAX
