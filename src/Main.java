@@ -149,7 +149,7 @@ class Main {
       ArrayList<Integer> waitingFrequencyList = computeFrequency(waitingTimeList);
 
       // Print chart
-      ChartPrinter.main(args, quietList, jailedList, activeList, waitingFrequencyList);
+      // ChartPrinter.main(args, quietList, jailedList, activeList, waitingFrequencyList);
     } catch (Exception e) {
       System.err.println("[ERROR]: " + e.getMessage());
       e.printStackTrace();
