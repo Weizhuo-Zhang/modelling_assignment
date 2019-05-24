@@ -76,7 +76,9 @@ public class ChartPrinter extends Application {
         lineChart.getData().add(jailedSeries);
         lineChart.getData().add(quietSeries);
 
-        extensionStage();
+        if (null != waitingTimeList) {
+            extensionStage();
+        }
         primaryStage.setScene(scene);
         primaryStage.show();
 
