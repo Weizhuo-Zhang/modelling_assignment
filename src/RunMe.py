@@ -108,9 +108,9 @@ def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail
         remove_config_files_command, shell=True, stdout=subprocess.PIPE)
     process.wait()
 
-    print("-------------------------"
+    print("--------------------------"
           " End of the experiment "
-          "-------------------------\n")
+          "--------------------------\n")
 
     # print("Experiment with following parameters: {} finished.\n".format(
     #     experiment_parameter_statement))
