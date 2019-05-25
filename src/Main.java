@@ -191,7 +191,7 @@ class Main {
     if (0 == length) {
       return null;
     }
-    System.out.println(length);
+    //    System.out.println(length);
     int maxNum = (int) Math.ceil((float) sortedList.get(length - 1) * 0.1);
     int cursor = 0;
     ArrayList<Integer> frequencyList = new ArrayList<>();
