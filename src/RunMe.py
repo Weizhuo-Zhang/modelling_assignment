@@ -112,16 +112,15 @@ if __name__ == "__main__":
         raise Exception("Python 3 is required.")
 
     # Compile Java codes to classes.
-    print("Compiling Java code...\n")
+    print("Compiling Java code...")
     process = subprocess.Popen(
         "javac Main.java", shell=True, stdout=subprocess.PIPE)
     process.wait()
     print("Java code compilation finished.\n")
 
-    run_the_experiement(0, 80, 6, 0.8, 40)
+    # Print the chart
+    print("Start printing chart using Java...\n")
+    process = subprocess.Popen("java Main PrintChart",
+                               shell=True, stdout=subprocess.PIPE)
 
-    print("Removing compiled Java classes...\n")
-    process = subprocess.Popen(
-        "rm *.class ", shell=True, stdout=subprocess.PIPE)
-    process.wait()
-    print("Java classes are removed.")
+    run_the_experiement(0, 80, 6, 0.8, 40)
