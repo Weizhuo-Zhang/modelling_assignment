@@ -39,9 +39,9 @@ def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_
     max_jail_term_str = str(max_jail_term)
 
     # Define fle names.
-    file_name_pattern = "_" + cop_density_str + "_" + agent_density_str + "_" + \
-        vision_str + "_" + legitimacy_str + "_" + \
-        max_jail_term_str + "_" + str(repeat_number)
+    file_name_pattern = "_" + cop_density_str + "_" +\
+        agent_density_str + "_" + vision_str + "_" + legitimacy_str +\
+        "_" + max_jail_term_str + "_" + str(repeat_number)
     file_name = "config" + file_name_pattern + ".properties"
     output_file_name = "out" + file_name_pattern
 
@@ -64,7 +64,8 @@ def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_
 
 
 def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail_term, repeat_number=5):
-    experiment_parameter_statement = "cop_density: {}, agent_density: {}, vision: {}, legitimacy: {}, max_jail_term: {}".format(
+    experiment_parameter_statement = "cop_density: {}, agent_density: \
+        {}, vision: {}, legitimacy: {}, max_jail_term: {}".format(
         cop_density, agent_density, vision, legitimacy, max_jail_term)
 
     print("Running experience with following parameters: {}".format(
@@ -73,19 +74,22 @@ def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail
     # Create repeat_number of config files, the only dofference
     # between these files are the OUTPUT_FILE_NAME_LABEL
     config_files = [generateConfigFile(
-        cop_density, agent_density, vision, legitimacy, max_jail_term, i) for i in range(repeat_number)]
+        cop_density, agent_density, vision, legitimacy,
+        max_jail_term, i) for i in range(repeat_number)]
 
     # Run repeat_number of processes together, wait for all of them
     # finish.
-    processes = [subprocess.Popen("java Main " + config_file, shell=True,
-                                  stdout=subprocess.PIPE) for config_file in config_files]
+    processes = [subprocess.Popen("java Main " + config_file,
+                                  shell=True, stdout=subprocess.PIPE)
+                 for config_file in config_files]
 
     # Wait all processes finish.
     for process in processes:
         process.wait()
 
+    remove_config_files_command = "rm " + " ".join(config_files)
     process = subprocess.Popen(
-        "rm " + " ".join(config_files), shell=True, stdout=subprocess.PIPE)
+        remove_config_files_command, shell=True, stdout=subprocess.PIPE)
     process.wait()
 
     print("Experiment with following parameters: {} finished.\n".format(
