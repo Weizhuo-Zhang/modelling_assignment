@@ -3,12 +3,16 @@ This repository is for `SWEN90004 - Modelling Complex Software System` Assignmen
 
 ## Note before compiling
 - Java environment: `jdk1.8.0_211`
+- Python environment: `python 3`
 - Please check the parameters in `src/config.properties`
 
 ## Compilation Instruction (linux and mac)
-`cd src/`
-
-`javac Main.java`
+1. `cd src/`
+2. Run the Python script to start the experiment.
+    a. if you have multiple versions of Python install, and the python 3 is named as `python3`, then use this command: 
+         `python3 RunMe.py`
+    b. otherwise, run this command: 
+        `python RunMe.py`
 
 ## Running Instruction 
 `java Main`
