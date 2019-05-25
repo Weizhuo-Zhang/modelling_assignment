@@ -25,7 +25,7 @@ def make_config_line(label, value):
     return str(label) + "=" + str(value) + "\n"
 
 
-def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_term):
+def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_term, repeat_number):
     '''
     Function generating a configuration file.
     '''
@@ -39,8 +39,9 @@ def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_
     max_jail_term_str = str(max_jail_term)
 
     # Define fle names.
-    file_name_pattern = "-" + cop_density_str + "-" + agent_density_str + \
-        "-" + vision_str + "-" + legitimacy_str + "-" + max_jail_term_str
+    file_name_pattern = "_" + cop_density_str + "_" + agent_density_str + "_" + \
+        vision_str + "_" + legitimacy_str + "_" + \
+        max_jail_term_str + "_" + str(repeat_number)
     file_name = "config" + file_name_pattern + ".properties"
     output_file_name = "out" + file_name_pattern
 
@@ -62,6 +63,35 @@ def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_
     return file_name
 
 
+def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail_term, repeat_number=5):
+    experiment_parameter_statement = "cop_density: {}, agent_density: {}, vision: {}, legitimacy: {}, max_jail_term: {}".format(
+        cop_density, agent_density, vision, legitimacy, max_jail_term)
+
+    print("Running experience with following parameters: {}".format(
+        experiment_parameter_statement))
+
+    # Create repeat_number of config files, the only dofference
+    # between these files are the OUTPUT_FILE_NAME_LABEL
+    config_files = [generateConfigFile(
+        cop_density, agent_density, vision, legitimacy, max_jail_term, i) for i in range(repeat_number)]
+
+    # Run repeat_number of processes together, wait for all of them
+    # finish.
+    processes = [subprocess.Popen("java Main " + config_file, shell=True,
+                                  stdout=subprocess.PIPE) for config_file in config_files]
+
+    # Wait all processes finish.
+    for process in processes:
+        process.wait()
+
+    process = subprocess.Popen(
+        "rm " + " ".join(config_files), shell=True, stdout=subprocess.PIPE)
+    process.wait()
+
+    print("Experiment with following parameters: {} finished.\n".format(
+        experiment_parameter_statement))
+
+
 # Entry point of the file
 if __name__ == "__main__":
     # Check if the user is using Python3 to run this script, if not,
@@ -69,17 +99,17 @@ if __name__ == "__main__":
     if sys.version_info[0] < 3:
         raise Exception("Python 3 is required.")
 
-    config_file_name = generateConfigFile(0, 80, 6, 0.8, 40)
-    config_file_name = generateConfigFile(0, 80, 6, 0.5, 40)
-
+    # Compile Java codes to classes.
+    print("Compiling Java code...\n")
     process = subprocess.Popen(
         "javac Main.java", shell=True, stdout=subprocess.PIPE)
     process.wait()
+    print("Java code compilation finished.\n")
 
-    process = subprocess.Popen(
-        "java Main " + config_file_name, shell=True, stdout=subprocess.PIPE)
-    process.wait()
+    run_the_experiement(0, 80, 6, 0.8, 40)
 
+    print("Removing compiled Java classes...\n")
     process = subprocess.Popen(
         "rm *.class ", shell=True, stdout=subprocess.PIPE)
     process.wait()
+    print("Java classes are removed.")
