@@ -82,9 +82,9 @@ def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail
     # print("Running experience with following parameters: {}".format(
     #     experiment_parameter_statement))
 
-    print("-------------------------"
+    print("--------------------------"
           " Start of the experiment "
-          "-------------------------")
+          "--------------------------")
     print(experiment_parameter_statement)
 
     # Create repeat_number of config files, the only dofference
