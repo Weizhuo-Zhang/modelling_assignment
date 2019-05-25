@@ -39,24 +39,29 @@ def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_
     max_jail_term_str = str(max_jail_term)
 
     # Define fle names.
-    file_name_pattern = "_" + cop_density_str + "_" +\
-        agent_density_str + "_" + vision_str + "_" + legitimacy_str +\
-        "_" + max_jail_term_str + "_" + str(repeat_number)
+    parameters_list = [cop_density_str, agent_density_str, vision_str,
+                       legitimacy_str, max_jail_term_str,
+                       str(repeat_number)]
+    file_name_pattern = "_".join(parameters_list)
     file_name = "config" + file_name_pattern + ".properties"
     output_file_name = "out" + file_name_pattern
 
     # Create the file.
     with open(file_name, "w+") as f:
         # Write the configuration data.
-        f.write(make_config_line(AGENT_DENSITY_LABEL, agent_density_str))
+        f.write(make_config_line(AGENT_DENSITY_LABEL,
+                                 agent_density_str))
         f.write(make_config_line(COP_DENSITY_LABEL, cop_density_str))
         f.write(make_config_line(VISION_LABEL, vision_str))
         f.write(make_config_line(
             GOVERNMENT_LEGITIMACY_LABEL, GOVERNMENT_LEGITIMACY))
         f.write(make_config_line(MAX_JAIL_TERM_LABEL, MAX_JAIL_TERM))
-        f.write(make_config_line(MOVEMENT_SWITCH_LABEL, MOVEMENT_SWITCH))
-        f.write(make_config_line(ITERATION_TIMES_LABEL, ITERATION_TIMES))
-        f.write(make_config_line(OUTPUT_FILE_NAME_LABEL, output_file_name))
+        f.write(make_config_line(MOVEMENT_SWITCH_LABEL,
+                                 MOVEMENT_SWITCH))
+        f.write(make_config_line(ITERATION_TIMES_LABEL,
+                                 ITERATION_TIMES))
+        f.write(make_config_line(OUTPUT_FILE_NAME_LABEL,
+                                 output_file_name))
 
     f.close()
 
