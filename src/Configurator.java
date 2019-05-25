@@ -31,7 +31,7 @@ public class Configurator {
   private final int MAX_JAIL_TERM_MIN = 0;
   private final int MAX_JAIL_TERM_MAX = 50;
 
-  private static String DEFAULT_CONFIG_FILE_PATH = "config";
+  private static String DEFAULT_CONFIG_FILE_PATH = "config.properties";
 
   private float copDensity;
   private float agentDensity;
