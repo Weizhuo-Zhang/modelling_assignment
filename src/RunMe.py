@@ -64,9 +64,12 @@ def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_
 
 
 def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail_term, repeat_number=5):
-    experiment_parameter_statement = "cop_density: {}, agent_density: \
-        {}, vision: {}, legitimacy: {}, max_jail_term: {}".format(
-        cop_density, agent_density, vision, legitimacy, max_jail_term)
+    experiment_parameter_statement = ("cop_density: {}, agent_density: "
+                                      "{}, vision: {}, legitimacy: {},"
+                                      " max_jail_term: {}, number of"
+                                      " repeat times: {}").format(
+        cop_density, agent_density, vision, legitimacy, max_jail_term,
+        repeat_number)
 
     print("Running experience with following parameters: {}".format(
         experiment_parameter_statement))
