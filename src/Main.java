@@ -17,10 +17,19 @@ import java.util.Random;
 class Main {
   public static void main(String[] args) {
     try {
+      boolean printChart = false;
+
       // Initialize the configuration, read value from configuration file into the instance.
       Configurator configurator;
       if (args.length != 0) {
-        configurator = new Configurator(args[0]);
+        String commandSpecified = args[0];
+
+        if (commandSpecified.equals("PrintChart")) {
+          printChart = true;
+          configurator = new Configurator();
+        } else {
+          configurator = new Configurator(commandSpecified);
+        }
       } else {
         configurator = new Configurator();
       }
@@ -64,7 +73,7 @@ class Main {
       String date = df.format(new Date());
 
       String outputFileName = configurator.getOutputFileName();
-      if (outputFileName.isEmpty()) {
+      if (outputFileName == null || outputFileName.isEmpty()) {
         outputFileName = "out_" + date;
       }
       File csvOut = new File(outputFileName + ".csv");
@@ -148,8 +157,10 @@ class Main {
       Collections.sort(waitingTimeList);
       ArrayList<Integer> waitingFrequencyList = computeFrequency(waitingTimeList);
 
-      // Print chart
-      // ChartPrinter.main(args, quietList, jailedList, activeList, waitingFrequencyList);
+      if (printChart) {
+        // Print chart
+        ChartPrinter.main(args, quietList, jailedList, activeList, waitingFrequencyList);
+      }
     } catch (Exception e) {
       System.err.println("[ERROR]: " + e.getMessage());
       e.printStackTrace();
