@@ -69,15 +69,23 @@ def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_
 
 
 def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail_term, repeat_number=5):
-    experiment_parameter_statement = ("cop_density: {}, agent_density: "
-                                      "{}, vision: {}, legitimacy: {},"
-                                      " max_jail_term: {}, number of"
-                                      " repeat times: {}").format(
+    experiment_parameter_statement = ("cop_density: {}\n"
+                                      "agent_density: {}\n"
+                                      "vision: {}\n"
+                                      "legitimacy: {}\n"
+                                      "max_jail_term: {}\n"
+                                      "number of repeat times: {}"
+                                      ).format(
         cop_density, agent_density, vision, legitimacy, max_jail_term,
         repeat_number)
 
-    print("Running experience with following parameters: {}".format(
-        experiment_parameter_statement))
+    # print("Running experience with following parameters: {}".format(
+    #     experiment_parameter_statement))
+
+    print("-------------------------"
+          " Start of the experiment "
+          "-------------------------")
+    print(experiment_parameter_statement)
 
     # Create repeat_number of config files, the only dofference
     # between these files are the OUTPUT_FILE_NAME_LABEL
@@ -100,8 +108,12 @@ def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail
         remove_config_files_command, shell=True, stdout=subprocess.PIPE)
     process.wait()
 
-    print("Experiment with following parameters: {} finished.\n".format(
-        experiment_parameter_statement))
+    print("-------------------------"
+          " End of the experiment "
+          "-------------------------\n")
+
+    # print("Experiment with following parameters: {} finished.\n".format(
+    #     experiment_parameter_statement))
 
 
 # Entry point of the file
@@ -123,4 +135,9 @@ if __name__ == "__main__":
     process = subprocess.Popen("java Main PrintChart",
                                shell=True, stdout=subprocess.PIPE)
 
-    run_the_experiement(0, 80, 6, 0.8, 40)
+    # Running the experiments.
+    run_the_experiement(5, 85, 6, 0.8, 40)
+    run_the_experiement(10, 80, 6, 0.8, 40)
+    run_the_experiement(15, 75, 6, 0.8, 40)
+    run_the_experiement(5, 85, 3, 0.8, 40)
+    run_the_experiement(5, 85, 9, 0.8, 40)
