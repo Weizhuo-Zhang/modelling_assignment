@@ -15,7 +15,6 @@ OUTPUT_FILE_NAME_LABEL = "OUTPUT_FILE_NAME"
 
 
 # Global constants for the configuration.
-GOVERNMENT_LEGITIMACY = 0.82
 MAX_JAIL_TERM = 30
 MOVEMENT_SWITCH = True
 ITERATION_TIMES = 1000
@@ -35,12 +34,13 @@ def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_
     vision_str = str(vision)
     # Times legitimacy with 100 and use int() to avoid period (.) in
     # file name
-    legitimacy_str = str(int(legitimacy*100))
+    legitimacy_str_in_file_name = (str(int(legitimacy * 100)))
+    legitimacy_str = str(legitimacy)
     max_jail_term_str = str(max_jail_term)
 
     # Define fle names.
     parameters_list = [cop_density_str, agent_density_str, vision_str,
-                       legitimacy_str, max_jail_term_str,
+                       legitimacy_str_in_file_name, max_jail_term_str,
                        str(repeat_number)]
     file_name_pattern = "_".join(parameters_list)
     file_name = "config" + file_name_pattern + ".properties"
@@ -54,8 +54,8 @@ def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_
         f.write(make_config_line(COP_DENSITY_LABEL, cop_density_str))
         f.write(make_config_line(VISION_LABEL, vision_str))
         f.write(make_config_line(
-            GOVERNMENT_LEGITIMACY_LABEL, GOVERNMENT_LEGITIMACY))
-        f.write(make_config_line(MAX_JAIL_TERM_LABEL, MAX_JAIL_TERM))
+            GOVERNMENT_LEGITIMACY_LABEL, legitimacy_str))
+        f.write(make_config_line(MAX_JAIL_TERM_LABEL, max_jail_term_str))
         f.write(make_config_line(MOVEMENT_SWITCH_LABEL,
                                  MOVEMENT_SWITCH))
         f.write(make_config_line(ITERATION_TIMES_LABEL,
@@ -78,9 +78,6 @@ def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail
                                       ).format(
         cop_density, agent_density, vision, legitimacy, max_jail_term,
         repeat_number)
-
-    # print("Running experience with following parameters: {}".format(
-    #     experiment_parameter_statement))
 
     print("--------------------------"
           " Start of the experiment "
@@ -108,12 +105,9 @@ def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail
         remove_config_files_command, shell=True, stdout=subprocess.PIPE)
     process.wait()
 
-    print("--------------------------"
+    print("---------------------------"
           " End of the experiment "
-          "--------------------------\n")
-
-    # print("Experiment with following parameters: {} finished.\n".format(
-    #     experiment_parameter_statement))
+          "---------------------------\n")
 
 
 # Entry point of the file
@@ -135,9 +129,18 @@ if __name__ == "__main__":
     process = subprocess.Popen("java Main PrintChart",
                                shell=True, stdout=subprocess.PIPE)
 
-    # Running the experiments.
+    # Experiment One
     run_the_experiement(5, 85, 6, 0.8, 40)
-    run_the_experiement(10, 80, 6, 0.8, 40)
-    run_the_experiement(15, 75, 6, 0.8, 40)
+    run_the_experiement(5.5, 85, 6, 0.8, 40)
+    run_the_experiement(6.0, 85, 6, 0.8, 40)
+    run_the_experiement(10, 85, 6, 0.8, 40)
     run_the_experiement(5, 85, 3, 0.8, 40)
     run_the_experiement(5, 85, 9, 0.8, 40)
+
+    # Experiment Two
+    run_the_experiement(10, 80, 7, 0.2, 40)
+    run_the_experiement(10, 80, 7, 0.5, 40)
+    run_the_experiement(10, 80, 7, 0.8, 40)
+    run_the_experiement(10, 80, 7, 0.2, 20)
+    run_the_experiement(4, 70, 7, 0.82, 16)
+    run_the_experiement(4, 70, 7, 0.82, 30)
