@@ -1,41 +1,67 @@
-/*
-    Usage: Superclass for cop and agent
-    Author:
-        Heming Li       804996      hemingl1@student.unimelb.edu.au
-        An Luo          657605      aluo1@student.unimelb.edu.au
-        Weizhuo Zhang   1018329     weizhuoz@student.unimelb.edu.au
-*/
-
+/**
+ * Usage: Class for simulating a person, no matter he/she is an agent or cop.
+ *
+ * @author Weizhuo Zhang (1018329) - weizhuoz@student.unimelb.edu.au
+ * @author Heming Li (804996) - hemingl1@student.unimelb.edu.au
+ * @author An Luo (657605) - aluo1@student.unimelb.edu.au
+ */
 public abstract class Person {
-    // Two different person type
-    public static final String AGENT = "Agent";
-    public static final String COP = "Cop";
+  /** Agent type. */
+  static final String AGENT = "Agent";
+  /** Cop type. */
+  static final String COP = "Cop";
 
-    private Position position;
-    private Environment environment;
+  /** Current position of this person. */
+  private Position position;
+  /** Current environment this person is in. */
+  private Environment environment;
 
-    public Person(Environment environment) throws Exception {
-        this.environment = environment;
-        this.position = environment.acquireAvailablePosition(this);
-    }
+  Person(Environment environment) throws Exception {
+    this.environment = environment;
+    this.position = environment.acquireAvailablePosition(this);
+  }
 
-    public Position getPosition() {
-        return position;
-    }
+  /**
+   * Get current position of the person.
+   *
+   * @return This person's current position.
+   */
+  Position getPosition() {
+    return position;
+  }
 
-    public void setPosition(Position position) {
-        this.position = position;
-    }
+  /**
+   * Move this person to the specified position.
+   *
+   * @param position Position this person is going to move to.
+   */
+  void setPosition(Position position) {
+    this.position = position;
+  }
 
-    public Environment getPersonEnvironment() {
-        return environment;
-    }
+  /**
+   * Get the environment of current person.
+   *
+   * @return Current environment this person is in.
+   */
+  Environment getPersonEnvironment() {
+    return environment;
+  }
 
-    // Move to another position
-    public void move() throws Exception {
-        position = environment.acquireMoving(this);
-    }
+  /**
+   * Move the person to another position.
+   *
+   * @throws Exception
+   */
+  void move() throws Exception {
+    position = environment.moveThePerson(this);
+  }
 
-    // Abstract action() method for subclass
-    abstract public void action() throws Exception;
+  /**
+   * Method indicating the action of the person, which will vary depends on the type of the person
+   * (agent or cop).
+   *
+   * @throws Exception
+   */
+  public abstract void action() throws Exception;
 }
