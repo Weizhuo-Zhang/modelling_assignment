@@ -1,7 +1,30 @@
-import sys
+"""RunMe.py
+
+This module contains code used for running the experiments.
+
+
+Usage:
+As this is a Python3 script, please run it using Python3.
+
+If you have only Python3 installed and it's used by calling `python`, then please run this script
+using `python RunMe.py`.
+
+If your Python3 is called using `python3`, then please run this script using `python3 RunMe.py`.
+
+
+Authors:
+    Weizhuo Zhang (1018329) - weizhuoz@student.unimelb.edu.au
+    Heming Li (804996) - hemingl1@student.unimelb.edu.au
+    An Luo (657605) - aluo1@student.unimelb.edu.au
+
+This script's documentation follows the Google Python Style Guid, which can be found here:
+http://google.github.io/styleguide/pyguide.html
+
+"""
+
 import os
 import subprocess
-
+import sys
 
 # Global constants for the configuration labels.
 AGENT_DENSITY_LABEL = "AGENT_DENSITY"
@@ -13,7 +36,6 @@ MOVEMENT_SWITCH_LABEL = "MOVEMENT_SWITCH"
 ITERATION_TIMES_LABEL = "ITERATION_TIMES"
 OUTPUT_FILE_NAME_LABEL = "OUTPUT_FILE_NAME"
 
-
 # Global constants for the configuration.
 MAX_JAIL_TERM = 30
 MOVEMENT_SWITCH = True
@@ -21,19 +43,43 @@ ITERATION_TIMES = 1000
 
 
 def make_config_line(label, value):
+    """make_config_line
+
+    Concatenate the label and value provided as a configuration file line, and add a new line
+    character at the end.
+
+    Args:
+        label: Label of the configuration line.
+        value: Value of the configuration line.
+
+    Returns:
+        str: Concatenated string with the format `label=value\n`
+    """
     return str(label) + "=" + str(value) + "\n"
 
 
 def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_term, repeat_number):
-    '''
+    """generateConfigFile
+
     Function generating a configuration file.
-    '''
+
+    Args:
+        cop_density: Initial cop density.
+        agent_density: Initial agent density.
+        vision: Vision of people.
+        legitimacy: Government legitimacy.
+        max_jail_term: Max jail term.
+        repeat_number: Number that we are going to repeat the experiment.
+
+    Returns:
+        str: generated configuration file's name.
+    """
     # Convert parameters to string.
     cop_density_str = str(cop_density)
     agent_density_str = str(agent_density)
     vision_str = str(vision)
-    # Times legitimacy with 100 and use int() to avoid period (.) in
-    # file name
+
+    # Times legitimacy with 100 and use int() to avoid period (.) in file name.
     legitimacy_str_in_file_name = (str(int(legitimacy * 100)))
     legitimacy_str = str(legitimacy)
     max_jail_term_str = str(max_jail_term)
@@ -69,6 +115,19 @@ def generateConfigFile(cop_density, agent_density, vision, legitimacy, max_jail_
 
 
 def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail_term, repeat_number=5):
+    """run_the_experiement
+
+    Function running the experiment with provided configuration values. Expreiments will be 
+    conducted n times, where n = repeat_number.
+
+    Args:
+        cop_density: Initial cop density.
+        agent_density: Initial agent density.
+        vision: Vision of people.
+        legitimacy: Government legitimacy.
+        max_jail_term: Max jail term.
+        repeat_number: Number that we are going to repeat the experiment.
+    """
     experiment_parameter_statement = ("cop_density: {}\n"
                                       "agent_density: {}\n"
                                       "vision: {}\n"
@@ -100,6 +159,7 @@ def run_the_experiement(cop_density, agent_density, vision, legitimacy, max_jail
     for process in processes:
         process.wait()
 
+    # Remove generated configuration files after all experiments finished.
     remove_config_files_command = "rm " + " ".join(config_files)
     process = subprocess.Popen(
         remove_config_files_command, shell=True, stdout=subprocess.PIPE)
