@@ -54,7 +54,7 @@ public abstract class Person {
    * @throws Exception
    */
   void move() throws Exception {
-    position = environment.acquireMoving(this);
+    position = environment.moveThePerson(this);
   }
 
   /**
