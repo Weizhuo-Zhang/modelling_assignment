@@ -170,7 +170,7 @@ public class Environment {
    * @throws Exception
    */
   Position moveThePerson(Person person) throws Exception {
-    Position newPosition = person.getPosition().move(person);
+    Position newPosition = person.getPosition().move();
     // If there is no any new position to move, the person will stay
     // the same position.
     if (null == newPosition) {
