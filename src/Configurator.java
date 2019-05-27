@@ -3,7 +3,7 @@ import java.io.FileReader;
 import java.util.HashMap;
 
 /**
- * Usage: reading the parameters in DEFAULT_CONFIG_FILE_PATH.properties file
+ * Usage: reading the parameters from configuration file.
  *
  * @author Weizhuo Zhang (1018329) - weizhuoz@student.unimelb.edu.au
  * @author Heming Li (804996) - hemingl1@student.unimelb.edu.au
@@ -42,7 +42,7 @@ public class Configurator {
   private int iterationTimes;
   private String outputFileName;
 
-  public Configurator(String configFilePath) throws Exception {
+  Configurator(String configFilePath) throws Exception {
     // Read resource file (configuration file)
     BufferedReader bufferedReader = new BufferedReader(new FileReader(configFilePath));
     HashMap<String, String> configValues = new HashMap<>();
@@ -76,43 +76,87 @@ public class Configurator {
     agentDensity = agentDensity * 0.01f;
   }
 
-  public Configurator() throws Exception {
+  Configurator() throws Exception {
     this(DEFAULT_CONFIG_FILE_PATH);
   }
 
-  public float getCopDensity() {
-    return copDensity;
-  }
-
-  public float getAgentDensity() {
-    return agentDensity;
-  }
-
+  /**
+   * Get the vision set up for person (both agent and cop).
+   *
+   * @return Vision of person, which is defined in the config file.
+   */
   public float getVision() {
     return vision;
   }
 
-  public float getGovernmentLegitimacy() {
-    return governmentLegitimacy;
-  }
-
-  public int getMaxJailTerm() {
-    return maxJailTerm;
-  }
-
+  /**
+   * Get the movement status.
+   *
+   * @return movement status, which is defined in the config file.
+   */
   public boolean isMovement() {
     return movementSwitch;
   }
 
-  public int getIterationTimes() {
+  /**
+   * Get cop density.
+   *
+   * @return Cop's density, which is defined in the config file.
+   */
+  float getCopDensity() {
+    return copDensity;
+  }
+
+  /**
+   * Get agent density.
+   *
+   * @return Agents' density, which is defined in the config file.
+   */
+  float getAgentDensity() {
+    return agentDensity;
+  }
+
+  /**
+   * Get the legitimacy of government.
+   *
+   * @return Government's legitimacy, which is defined in the config file.
+   */
+  float getGovernmentLegitimacy() {
+    return governmentLegitimacy;
+  }
+
+  /**
+   * Get the max jail term.
+   *
+   * @return Max jail term, which is defined in the config file.
+   */
+  int getMaxJailTerm() {
+    return maxJailTerm;
+  }
+
+  /**
+   * Get the iteration time.
+   *
+   * @return Iteration time, which is defined in the config file.
+   */
+  int getIterationTimes() {
     return iterationTimes;
   }
 
-  public String getOutputFileName() {
+  /**
+   * Get the output file name.
+   *
+   * @return Output file name, which is defined in the config file.
+   */
+  String getOutputFileName() {
     return this.outputFileName;
   }
 
-  // Check the range of the parameters
+  /**
+   * Check the range of the parameters
+   *
+   * @throws Exception
+   */
   private void checkParameters() throws Exception {
     checkDensity();
     checkVision();
@@ -120,7 +164,12 @@ public class Configurator {
     checkMaxJailTerm();
   }
 
-  // Check the range of density
+  /**
+   * Check the density value.
+   *
+   * @throws Exception Exception is thrown when total density is less than the minimum value or
+   *     greater than the maximum value.
+   */
   private void checkDensity() throws Exception {
     float totalDensity = copDensity + agentDensity;
     if (totalDensity <= DENSITY_MIN || totalDensity >= DENSITY_MAX) {
@@ -138,7 +187,12 @@ public class Configurator {
     }
   }
 
-  // Check the range of the vision
+  /**
+   * Check the vision value.
+   *
+   * @throws Exception Exception is thrown when vision is smaller than the minimum value or greater
+   *     than the maximum value.
+   */
   private void checkVision() throws Exception {
     if (vision < VISION_MIN || vision > VISION_MAX) {
       throw new Exception(
@@ -153,7 +207,12 @@ public class Configurator {
     }
   }
 
-  // Check the range of government legitimacy
+  /**
+   * Check government legitimacy value.
+   *
+   * @throws Exception Exception is thrown when government legitimacy is less than the minimum value
+   *     or greater than the maximum value.
+   */
   private void checkGovernmentLegitimacy() throws Exception {
     if (governmentLegitimacy < GOVERNMENT_LEGITIMACY_MIN
         || governmentLegitimacy > GOVERNMENT_LEGITIMACY_MAX) {
@@ -168,7 +227,12 @@ public class Configurator {
     }
   }
 
-  // Check the range of max jail term
+  /**
+   * Check the max jailed term.
+   *
+   * @throws Exception Exception is thrown if max jail term is less than the minimum value or
+   *     greater than the maximum value.
+   */
   private void checkMaxJailTerm() throws Exception {
     if (maxJailTerm < MAX_JAIL_TERM_MIN || maxJailTerm > MAX_JAIL_TERM_MAX) {
       throw new Exception(
@@ -180,14 +244,5 @@ public class Configurator {
               + MAX_JAIL_TERM_MAX
               + "].");
     }
-  }
-
-  private void testParameters() {
-    System.out.println(copDensity);
-    System.out.println(agentDensity);
-    System.out.println(vision);
-    System.out.println(governmentLegitimacy);
-    System.out.println(maxJailTerm);
-    System.out.println(movementSwitch);
   }
 }
