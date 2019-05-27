@@ -98,8 +98,6 @@ class Main {
       jailedList.add(0);
       activeList.add(0);
       int waitingTime = 0;
-      //            int activeTime = 0;
-      //            int internal = 10;
 
       for (int i = 0; i < iterationTimes; i++) {
         int quietCount = 0;
@@ -117,9 +115,6 @@ class Main {
             // Agent is in jail
             agent.decreaseJailTerm();
             jailedCount++;
-            //                    } else if (null == agent.getPosition()) {
-            //                        // Agent will leave jail in next turn
-            //                        jailedCount++;
           } else if (agent.isActive()) {
             activeCount++;
           } else {
@@ -133,16 +128,9 @@ class Main {
             waitingTimeList.add(waitingTime);
             waitingTime = 0;
           }
-          //                    activeTime++;
         } else {
           waitingTime++;
         }
-
-        //                if (0 == (activeTime % internal) && 0 != activeTime) {
-        //                    waitingTimeList.add(waitingTime);
-        //                    waitingTime = 0;
-        //                    internal += 10;
-        //                }
 
         bw.write(quietCount + ", " + jailedCount + ", " + activeCount + "\n");
         quietList.add(quietCount);
@@ -167,7 +155,13 @@ class Main {
     }
   }
 
-  // Generate random array for given size
+  /**
+   * Generate random array for given size
+   *
+   * @param size Size of the array.
+   * @return An array of objects whose value is randomly generated, and size of the array is the
+   *     provided parameter.
+   */
   private static Object[] generateRandomArray(int size) {
     Random random = new Random();
     ArrayList<Integer> rangeList = new ArrayList<>();
@@ -185,13 +179,18 @@ class Main {
     return values;
   }
 
-  // Compute the frequency from [0,10], (10,11],...(10n,11n] n is natural num
+  /**
+   * Compute the frequency from [0,10], (10,11],...[10n,11n] where n is natural number.
+   *
+   * @param sortedList Sorted list.
+   * @return An ArrayList of integer, indicating the frequency.
+   */
   private static ArrayList<Integer> computeFrequency(ArrayList<Integer> sortedList) {
     int length = sortedList.size();
     if (0 == length) {
       return null;
     }
-    //    System.out.println(length);
+
     int maxNum = (int) Math.ceil((float) sortedList.get(length - 1) * 0.1);
     int cursor = 0;
     ArrayList<Integer> frequencyList = new ArrayList<>();
