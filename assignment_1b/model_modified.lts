@@ -1,0 +1,110 @@
+//
+// Name:       Weizhuo ZHANG
+// Student ID: 1018329
+// Login:      weizhuoz
+// Email:      weizhuoz@student.unimelb.student.edu.au
+//
+
+
+const TUG_COUNT   = 3               // The number of tugs
+const PILOT_COUNT = 3               // The number of pilot
+const DOCKING_TUGS = 3              // The number of tugs requried by docking
+const UNDOCKING_TUGS = 2            // The number of tugs required by undocking
+const ARRIVAL_ZONE_SIZE = 1         // The capacity of arrival zone
+const DEPARTURE_ZONE_SIZE = 1       // The capacity of departure zone
+
+const False = 0
+const True = 1
+range Bool = False..True
+
+// The arrival wait zone
+// If a ship arrives at arrival wait zone, the available space of the arrival
+// zone is subtracted by one.
+// If a ship departs from arrival wait zone, the available space of the arrival
+// zone is added by one.
+ARRIVAL_ZONE (N = ARRIVAL_ZONE_SIZE) = ARRIVAL_BUFF[0],
+ARRIVAL_BUFF [i:0..N] =
+    ( when (i < N) shipArriveArrival -> ARRIVAL_BUFF[i+1]
+    | when (i > 0) shipDepartArrival -> ARRIVAL_BUFF[i-1]
+    ).
+
+// Producer creates one ship at every time for arrival wait zone when there is
+// space available.
+PRODUCER = ( createNewShip -> PRODUCER)
+           /{createNewShip/shipArriveArrival}.
+
+// The departure wait zone
+// If a ship arrives at departure wait zone, the available space of the
+// departure zone is subtracted by one.
+// If a ship departs from departure wait zone, the available space of the
+// departure zone is added by one.
+// When pilot release his ship, the undocking tugs will be released immediately
+DEPARTURE_ZONE (N = DEPARTURE_ZONE_SIZE) = DEPARTURE_BUFF[0],
+DEPARTURE_BUFF [i:0..N] =
+    ( when (i < N) shipArriveDeparture
+        -> p[p:1..PILOT_COUNT].releaseUndockingTugs   -> DEPARTURE_BUFF[i+1]
+    | when (i > 0) shipDepartDeparture -> DEPARTURE_BUFF[i-1]
+    ),
+
+// Consumer departs one ship at every time for departure wait zone when there is
+// ship available.
+CONSUMER = ( departShip -> CONSUMER)
+           /{departShip/shipDepartDeparture}.
+
+// The berth controls the shield and permits ship docking or undocking
+BERTH = BERTH_BUFF[False][False],
+BERTH_BUFF[hasShip:Bool][shield:Bool] =
+    ( when (False == hasShip && False == shield) dock
+        -> BERTH_BUFF[True][shield]
+    | when (True == hasShip && False == shield)  undock
+        -> BERTH_BUFF[False][shield]
+    | when (False == shield) activateShield  -> BERTH_BUFF[hasShip][True]
+    | when (True == shield) deactivateShield -> BERTH_BUFF[hasShip][False]
+    | checkHasShip[hasShip][shield]          -> BERTH_BUFF[hasShip][shield]
+    ).
+
+// Tugs process allow pilots aquiring tugs for docking or undocking
+// Tugs should reserve enough tugs for undocking to avoid process violation
+TUGS (N = TUG_COUNT) = TUGS_BUFF[TUG_COUNT],
+TUGS_BUFF[tug:0..N] =
+    ( when (tug <= (N - DOCKING_TUGS))   p[i:1..PILOT_COUNT].releaseDockingTugs
+        -> TUGS_BUFF[tug+DOCKING_TUGS]
+    | when (tug <= (N - UNDOCKING_TUGS)) p[i:1..PILOT_COUNT].releaseUndockingTugs
+        -> TUGS_BUFF[tug+UNDOCKING_TUGS]
+    | when (tug >= UNDOCKING_TUGS)       p[i:1..PILOT_COUNT].acquireUndockingTugs
+        -> TUGS_BUFF[tug-UNDOCKING_TUGS]
+    | berth.checkHasShip[hasShip:Bool][shield:Bool] ->
+        ( when (True == hasShip && tug  >= (DOCKING_TUGS + UNDOCKING_TUGS))
+            p[i:1..PILOT_COUNT].acquireDockingTugs -> TUGS_BUFF[tug-DOCKING_TUGS]
+        | when (False == hasShip && tug >= DOCKING_TUGS)
+            p[i:1..PILOT_COUNT].acquireDockingTugs -> TUGS_BUFF[tug-DOCKING_TUGS]
+        | getLatestTugs -> TUGS_BUFF[tug]
+        )
+    ).
+
+// Pilot and its lifecycle.
+PILOT =
+    (  acquireShip -> acquireDockingTugs   -> dock   -> releaseDockingTugs
+    -> unload      -> acquireUndockingTugs -> undock -> releaseShip
+    -> releaseUndockingTugs -> PILOT
+    ).
+
+// Ship can departs from departure zone after that pilot release this ship and
+// release its tugs.
+property RELEASE_SHIP =
+    ( p[i:1..PILOT_COUNT].releaseShip -> p[i].releaseUndockingTugs
+        -> departShip -> RELEASE_SHIP
+    ).
+
+// The main composite process.
+||MAIN =
+    (  ARRIVAL_ZONE
+    || DEPARTURE_ZONE
+    || berth:BERTH
+    || TUGS(TUG_COUNT)
+    || p[i:1..PILOT_COUNT]:PILOT
+    || RELEASE_SHIP
+    )/{ p[i:1..PILOT_COUNT].acquireShip/shipDepartArrival,
+        p[i:1..PILOT_COUNT].dock/berth.dock,
+        p[i:1..PILOT_COUNT].undock/berth.undock,
+        p[i:1..PILOT_COUNT].releaseShip/shipArriveDeparture}.

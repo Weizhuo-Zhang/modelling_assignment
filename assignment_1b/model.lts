@@ -1,0 +1,91 @@
+//
+// Name:       Weizhuo ZHANG
+// Student ID: 1018329
+// Login:      weizhuoz
+// Email:      weizhuoz@student.unimelb.student.edu.au
+//
+
+
+const TUG_COUNT   = 8               // The number of tugs
+const PILOT_COUNT = 3               // The number of pilot
+const DOCKING_TUGS = 3              // The number of tugs requried by docking
+const UNDOCKING_TUGS = 2            // The number of tugs required by undocking
+const ARRIVAL_ZONE_SIZE = 1         // The capacity of arrival zone
+const DEPARTURE_ZONE_SIZE = 1       // The capacity of departure zone
+
+const False = 0
+const True = 1
+range Bool = False..True
+
+// The arrival wait zone
+// If a ship arrives at arrival wait zone, the available space of the arrival
+// zone is subtracted by one.
+// If a ship departs from arrival wait zone, the available space of the arrival
+// zone is added by one.
+ARRIVAL_ZONE (N = ARRIVAL_ZONE_SIZE) = ARRIVAL_BUFF[0],
+ARRIVAL_BUFF [i:0..N] =
+    ( when (i < N) shipArriveArrival -> ARRIVAL_BUFF[i+1]
+    | when (i > 0) shipDepartArrival -> ARRIVAL_BUFF[i-1]
+    ).
+
+// Producer creates one ship at every time for arrival wait zone when there is
+// space available.
+PRODUCER = ( createNewShip -> PRODUCER)
+           /{createNewShip/shipArriveArrival}.
+
+// The departure wait zone
+// If a ship arrives at departure wait zone, the available space of the
+// departure zone is subtracted by one.
+// If a ship departs from departure wait zone, the available space of the
+// departure zone is added by one.
+DEPARTURE_ZONE (N = DEPARTURE_ZONE_SIZE) = DEPARTURE_BUFF[0],
+DEPARTURE_BUFF [i:0..N] =
+    ( when (i < N) shipArriveDeparture -> DEPARTURE_BUFF[i+1]
+    | when (i > 0) shipDepartDeparture -> DEPARTURE_BUFF[i-1]
+    ),
+
+// Consumer departs one ship at every time for departure wait zone when there is
+// ship available.
+CONSUMER = ( departShip -> CONSUMER)
+           /{departShip/shipDepartDeparture}.
+
+// The berth controls the shield and permits ship docking or undocking
+BERTH (N = 1) = BERTH_BUFF[0][False],
+BERTH_BUFF[i:0..N][shield:Bool] =
+    ( when (i < N && False == shield) dock   -> BERTH_BUFF[i+1][shield]
+    | when (i > 0 && False == shield) undock -> BERTH_BUFF[i-1][shield]
+    | when (False == shield) activateShield  -> BERTH_BUFF[i][True]
+    | when (True == shield) deactivateShield -> BERTH_BUFF[i][False]
+    ).
+
+// Tugs process allow pilots aquiring tugs for docking or undocking
+TUGS (N = TUG_COUNT) = TUGS_BUFF[TUG_COUNT],
+TUGS_BUFF[i:0..N] =
+    ( when (i <= (N - DOCKING_TUGS))   releaseDockingTugs
+        -> TUGS_BUFF[i+DOCKING_TUGS]
+    | when (i <= (N - UNDOCKING_TUGS)) releaseUndockingTugs
+        -> TUGS_BUFF[i+UNDOCKING_TUGS]
+    | when (i >= UNDOCKING_TUGS)       acquireUndockingTugs
+        -> TUGS_BUFF[i-UNDOCKING_TUGS]
+    | when (i >= DOCKING_TUGS)         acquireDockingTugs
+        -> TUGS_BUFF[i-DOCKING_TUGS]
+    ).
+
+// Pilot and its lifecycle.
+PILOT =
+    (  acquireShip -> acquireDockingTugs   -> dock   -> releaseDockingTugs
+    -> unload      -> acquireUndockingTugs -> undock -> releaseShip
+    -> releaseUndockingTugs -> PILOT
+    ).
+
+// The main composite process.
+||MAIN =
+    (  ARRIVAL_ZONE
+    || DEPARTURE_ZONE
+    || BERTH
+    || {p[i:1..PILOT_COUNT]}::TUGS(TUG_COUNT)
+    || p[i:1..PILOT_COUNT]:PILOT
+    )/{ p[i:1..PILOT_COUNT].acquireShip/shipDepartArrival,
+        p[i:1..PILOT_COUNT].dock/dock,
+        p[i:1..PILOT_COUNT].undock/undock,
+        p[i:1..PILOT_COUNT].releaseShip/shipArriveDeparture}.
